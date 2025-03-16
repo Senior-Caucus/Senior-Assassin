@@ -1,0 +1,14 @@
+version: 2
+updates:
+  - package-ecosystem: "npm" # This specifies that you're using npm as your package manager
+    directory: "/" # The directory where your package.json is located
+    schedule:
+      interval: "daily" # This sets the update frequency. You can also use "daily" or "monthly"
+    commit-message:
+      prefix: "deps" # This prefixes the commit messages with "deps" to indicate dependency updates
+    open-pull-requests-limit: 5 # Limits the number of open pull requests for dependency updates
+    target-branch: "main" # The branch you want the pull requests to be opened against
+    assignees:
+      - "Elias2660" # Assigns the pull request to your GitHub username
+    labels:
+      - "dependencies" # Adds a "dependencies" label to the pull requests
