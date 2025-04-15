@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+  <h2>Admin Dashboard</h2>
+  <p>Welcome, Admin! Review pending submissions below.</p>
+  
+  <!-- Example table; in a real app, you'd supply a list of submissions -->
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>User</th>
+        <th>Date</th>
+        <th>Status</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for submission in submissions %}
+      <tr>
+        <td>{{ submission.id }}</td>
+        <td>{{ submission.user }}</td>
+        <td>{{ submission.date }}</td>
+        <td>{{ submission.status }}</td>
+        <td><a href="/admin/approve/{{ submission.id }}">Approve</a></td>
+      </tr>
+      {% else %}
+      <tr>
+        <td colspan="5">No submissions available.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

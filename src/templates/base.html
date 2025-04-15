@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}My FastAPI App{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+  <header>
+    <h1>Senior Assassin App</h1>
+    <!-- You can include a navigation bar here -->
+  </header>
+
+  <main>
+    {% block content %}
+    <!-- Page-specific content goes here -->
+    {% endblock %}
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Senior Assassin</p>
+  </footer>
+</body>
+</html>

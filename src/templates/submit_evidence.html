@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Submit Evidence{% endblock %}
+
+{% block content %}
+  <h2>Submit Evidence</h2>
+  <form action="/user/submit-evidence" method="post" enctype="multipart/form-data">
+    <div>
+      <label for="evidence">Upload Evidence:</label>
+      <input type="file" id="evidence" name="evidence" required>
+    </div>
+    <button type="submit">Submit</button>
+  </form>
+{% endblock %}
