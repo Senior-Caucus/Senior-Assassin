@@ -99,6 +99,56 @@ a#login {
     cursor: pointer;
 }
 
+// Winner screen with same background style as homepage
+.winner-bg {
+    height: 100vh;
+    width: 100vw;
+    background:
+      linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+      url('/static/images/home/senior-assassin-homepage.jpg') no-repeat center center;
+    background-size: cover;
+    @include flex-center;
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    box-sizing: border-box;
+  }
+  
+  // Title
+  .winner-bg h2 {
+    @extend .nosifer-regular;
+    font-size: 6rem;
+    color: $accent-color;
+    text-shadow: 0 0 10px $accent-color;
+  
+    @media (max-width: 600px) {
+      font-size: 3rem;
+    }
+  }
+  
+  // Subtitle
+  .winner-bg h3 {
+    font-size: 2rem;
+    color: $secondary-color;
+    margin-top: -1rem;
+    margin-bottom: 1.5rem;
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.4);
+  }
+  
+  // Gift Card Code
+  .giftcard-code {
+    font-size: 1.5rem;
+    letter-spacing: 0.3rem;
+    background-color: rgba(255, 255, 255, 0.05);
+    padding: 1rem 2rem;
+    border: 2px dashed $accent-color;
+    border-radius: 8px;
+    box-shadow: 0 0 12px rgba(255, 0, 0, 0.3);
+    color: $secondary-color;
+    font-family: monospace;
+  }
+
 // Footer
 footer {
   position: absolute;
