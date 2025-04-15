@@ -1,4 +1,4 @@
-# src/auth.py
+# src/routers/auth.py
 
 from fastapi import APIRouter, HTTPException, Header
 from ..services.firebase_auth import verify_firebase_token

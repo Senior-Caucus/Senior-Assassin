@@ -5,10 +5,11 @@
 {% block content %}
   <div class="homepage-bg">
     <h2 class="nosifer-regular">Senior Assassin</h2>
-    <a id="login">Access Portal</a>
+    <!-- This button initiates the Firebase Google login -->
+    <button id="login">Access Portal</button>
   </div>
 {% endblock %}
 
 {% block scripts %}
-  <script src="/static/js/login.js"></script>
+  <script src="/static/js/login.js" type="module"></script>
 {% endblock %}

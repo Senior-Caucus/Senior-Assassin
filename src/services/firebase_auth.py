@@ -1,10 +1,11 @@
 # src/services/firebase_auth.py
+
 import os
 import firebase_admin
 from firebase_admin import credentials, auth as firebase_auth
 from fastapi import HTTPException
 
-# Initialize Firebase Admin only once
+# Initialize Firebase Admin only once.
 if not firebase_admin._apps:
     cred_path = os.getenv("FIREBASE_SERVICE_ACCOUNT_PATH", "src/secrets/firebase_service_account.json")
     cred = credentials.Certificate(cred_path)
