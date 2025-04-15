@@ -3,34 +3,55 @@
 {% block title %}Admin Dashboard{% endblock %}
 
 {% block content %}
-  <h2>Admin Dashboard</h2>
-  <p>Welcome, Admin! Review pending submissions below.</p>
-  
-  <!-- Example table; in a real app, you'd supply a list of submissions -->
-  <table>
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>User</th>
-        <th>Date</th>
-        <th>Status</th>
-        <th>Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for submission in submissions %}
-      <tr>
-        <td>{{ submission.id }}</td>
-        <td>{{ submission.user }}</td>
-        <td>{{ submission.date }}</td>
-        <td>{{ submission.status }}</td>
-        <td><a href="/admin/approve/{{ submission.id }}">Approve</a></td>
-      </tr>
-      {% else %}
-      <tr>
-        <td colspan="5">No submissions available.</td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="admin-dashboard">
+    <div class="admin-meta">
+      <h2 class="nosifer-regular">SENIOR ASSASSIN</h2>
+      <div class="meta-stats">
+        <p>👥 Assassins: <strong>18</strong></p>
+        <p>💀 Eliminations: <strong>9</strong></p>
+        <p>📹 Unapproved Evidence: <strong>3</strong></p>
+      </div>
+    </div>
+
+    <div class="admin-table">
+      <table>
+        <thead>
+          <tr>
+            <th>Assassin</th>
+            <th>Target</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Repeat for each row -->
+          <tr>
+            <td>Alice</td>
+            <td>Bob</td>
+            <td><button class="review-btn" data-video="/static/videos/sample.mp4">Review</button></td>
+          </tr>
+          <tr>
+            <td>Charlie</td>
+            <td>David</td>
+            <td><button class="review-btn" data-video="/static/videos/sample2.mp4">Review</button></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="review-modal" class="modal hidden">
+    <div class="modal-content">
+      <button class="close-btn">&times;</button>
+      <video id="evidence-video" controls></video>
+      <div class="modal-actions">
+        <button class="approve-btn">Approve</button>
+        <button class="deny-btn">Deny</button>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/admin.js"></script>
 {% endblock %}

@@ -2,13 +2,15 @@
 
 from fastapi import APIRouter, Depends, HTTPException
 # from ..auth import get_current_admin  # or your own admin check logic
+# get the templates from config
+from ..config import templates
 
 router = APIRouter()
 
 @router.get("/dashboard")
 def admin_dashboard():
     # maybe fetch data from Google Sheets
-    return {"message": "Admin dashboard"}
+    return templates.TemplateResponse("admin_dashboard.html", {"request": {}, "data": {}})
 
 @router.post("/approve-evidence")
 def approve_evidence(evidence_id: str):
