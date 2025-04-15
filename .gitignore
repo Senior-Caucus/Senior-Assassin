@@ -1,38 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+
+# Virtual environment
+venv/
+env/
+
+# Environment variables
 .env
+.env.*
+!.env.example
 
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# Secrets
+/src/secrets/
+src/secrets/*
 
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-.yarn/install-state.gz
+# Logs and runtime files
+*.log
+*.pid
+*.db
+*.sqlite3
 
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# production
-/build
-
-# misc
+# macOS
 .DS_Store
+
+# Certificates
 *.pem
+*.key
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# VSCode settings
+.vscode/
+.history/
 
-# local env files
-.env*.local
+# Local files
+.idea/
+*.swp
+.pytest_cache/
+.mypy_cache/
 
-# vercel
-.vercel
+# SCSS build
+src/static/css/
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# Build artifacts
+build/
+dist/
+*.egg-info/
