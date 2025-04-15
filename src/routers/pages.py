@@ -20,9 +20,9 @@ def get_login_page(request: Request):
 def target_page(request: Request):
     return templates.TemplateResponse("target.html", {"request": request})
 
-@router.get("/awaiting-approval", response_class=HTMLResponse)
-def get_awaiting_approval_page(request: Request):
-    return templates.TemplateResponse("awaiting_approval.html", {"request": request})
+@router.get("/awaiting", response_class=HTMLResponse)
+def get_awaiting_page(request: Request):
+    return templates.TemplateResponse("awaiting.html", {"request": request})
 
 @router.get("/winner", response_class=HTMLResponse)
 def get_winner_page(request: Request):
