@@ -149,6 +149,178 @@ a#login {
     font-family: monospace;
   }
 
+  // Target Page Styling
+.target-page {
+    height: 100vh;
+    width: 100vw;
+    background:
+      linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
+      url('/static/images/home/senior-assassin-homepage.jpg') no-repeat center center;
+    background-size: cover;
+    @include flex-center;
+    flex-direction: column;
+    text-align: center;
+    gap: 1.5rem;
+    padding: 2rem;
+    box-sizing: border-box;
+    position: relative;
+  }
+  
+  .target-page h2 {
+    @extend .nosifer-regular;
+    font-size: 4rem;
+    color: $accent-color;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 8px $accent-color;
+  }
+  
+  .target-image img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 3px solid $accent-color;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+    margin-bottom: 1rem;
+  }
+  
+  .action-btn {
+    font-size: 1.25rem;
+    padding: 0.75rem 2rem;
+    background-color: $primary-color;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+  
+    &:hover {
+      background-color: darken($primary-color, 10%);
+    }
+  }
+  
+  // Modal styles
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 100vw;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+  }
+  
+  .modal-content {
+    background: #1a1a1a;
+    padding: 2rem;
+    border: 2px solid $accent-color;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    color: white;
+    position: relative;
+  }
+  
+  .modal-content h3 {
+    margin-top: 0;
+    color: $secondary-color;
+  }
+  
+  .modal-content label {
+    display: block;
+    text-align: left;
+    margin-top: 1rem;
+    margin-bottom: 0.25rem;
+  }
+  
+  .modal-content input[type="file"],
+  .modal-content textarea {
+    width: 100%;
+    padding: 0.5rem;
+    background: #333;
+    border: 1px solid #666;
+    color: white;
+    border-radius: 5px;
+  }
+  
+  .submit-btn {
+    margin-top: 1.5rem;
+    background-color: $accent-color;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+  
+    &:hover {
+      background-color: darken($accent-color, 10%);
+    }
+  }
+  
+  .close-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.75rem;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+  }
+  
+  // Rules Box
+  #rules-btn {
+    position: fixed;
+    bottom: 1rem;
+    right: 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid white;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    cursor: pointer;
+    z-index: 100;
+  
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+    }
+  }
+  
+  .rules {
+    position: fixed;
+    bottom: 4rem;
+    right: 1rem;
+    background: #1a1a1a;
+    border: 2px solid $accent-color;
+    padding: 1rem;
+    border-radius: 8px;
+    color: white;
+    width: 300px;
+    text-align: left;
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+    z-index: 9;
+  
+    h4 {
+      margin: 0 0 0.5rem;
+      color: $secondary-color;
+    }
+  
+    ul {
+      padding-left: 1.2rem;
+  
+      li {
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+  
+  .hidden {
+    display: none;
+  }
+
 // Footer
 footer {
   position: absolute;

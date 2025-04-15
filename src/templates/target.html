@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Target{% endblock %}
+
+{% block content %}
+  <div class="target-page">
+    <h2 class="nosifer-regular">TARGET: John Doe</h2>
+    
+    <div class="target-image">
+      <img src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png" alt="Target Photo">
+    </div>
+
+    <button id="open-evidence" class="action-btn">Submit Evidence</button>
+
+    <!-- Modal Form -->
+    <div id="evidence-modal" class="modal hidden">
+      <div class="modal-content">
+        <button class="close-btn">&times;</button>
+        <h3>Submit Evidence</h3>
+        <form action="/submit-evidence" method="post" enctype="multipart/form-data">
+          <label for="video">Video Evidence (max 25MB):</label>
+          <input type="file" name="video" id="video" accept="video/*" required>
+
+          <label for="comments">Comments:</label>
+          <textarea name="comments" id="comments" rows="4" placeholder="Optional..."></textarea>
+
+          <button type="submit" class="submit-btn">Submit</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Rules Toggle -->
+    <button id="rules-btn">Rules</button>
+    <div id="rules-box" class="rules hidden">
+      <h4>Game Rules</h4>
+      <ul>
+        <li>No physical contact</li>
+        <li>Tag only outside class</li>
+        <li>Must have video proof</li>
+        <li>Respect boundaries</li>
+        <!-- Add more as needed -->
+      </ul>
+    </div>
+  </div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/static/js/target.js"></script>
+{% endblock %}

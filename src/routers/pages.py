@@ -16,9 +16,9 @@ def get_index(request: Request):
 def get_login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
-@router.get("/submit-evidence", response_class=HTMLResponse)
-def get_submit_evidence_page(request: Request):
-    return templates.TemplateResponse("submit_evidence.html", {"request": request})
+@router.get("/target", response_class=HTMLResponse)
+def target_page(request: Request):
+    return templates.TemplateResponse("target.html", {"request": request})
 
 @router.get("/awaiting-approval", response_class=HTMLResponse)
 def get_awaiting_approval_page(request: Request):
