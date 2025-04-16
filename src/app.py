@@ -2,11 +2,13 @@
 
 import os
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, UploadFile, File
+from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 
 from .routers import admin, user, pages, auth
 from .config import templates
+from .services.sheets import get_row, append_row, SESSIONS_SHEET_ID, USERS_SHEET_ID
 
 # Load environment variables
 from dotenv import load_dotenv
@@ -51,3 +53,64 @@ app.include_router(auth.router, prefix="/auth", tags=["auth"])
 @app.get("/")
 def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
+# Post signup route
+@app.post("/signup")
+async def signup(request: Request, profilePic: UploadFile = File(...)):
+    # Parse the incoming form data
+    form = await request.form()
+    
+    # Retrieve the session id from cookies (assumes a cookie named 'session_id')
+    session_id = request.cookies.get("session_id")
+    if not session_id:
+        return {"error": "No session found."}
+    
+    # Retrieve session row using the session id as primary key
+    session_row = get_row(SESSIONS_SHEET_ID, session_id)
+    if not session_row:
+        return {"error": "Session not found."}
+
+    # Extract email from the session row (assuming email is the second column)
+    email = session_row[2] if len(session_row) > 2 else None
+    if not email:
+        return {"error": "Email not found in session."}
+
+    # Build the schedule list for periods 1-10
+    # For each period, if the checkbox is checked then it's considered no class (set as "None"),
+    # otherwise use the entered room number (or "None" if left blank)
+    schedule_list = []
+    for period in range(1, 11):
+        room = form.get(f"period{period}_room")
+        noclass = form.get(f"period{period}_noclass")
+        if noclass:
+            schedule_list.append("None")
+        else:
+            schedule_list.append(room.strip() if room and room.strip() != "" else "None")
+    
+    # Convert the schedule list to a comma separated string
+    schedule_str = ",".join(schedule_list)
+
+    # Construct the new user row using the header:
+    # email, role, currentTarget, eliminationHistory, createdAt, fullName, waiting, picturePath, schedule
+    import time
+    new_user_row = [
+        email,            # email from the session
+        "user",         # default role is user
+        "None",         # currentTarget
+        "None",         # eliminationHistory
+        str(time.time()), # createdAt
+        "None",         # fullName
+        "False",        # waiting (not waiting for anything upon signup)
+        "None",         # picturePath (to be handled later)
+        schedule_str      # schedule as a comma separated string
+    ]
+
+    # Check if the user already exists in the USERS_SHEET_ID
+    user_exists = get_row(USERS_SHEET_ID, email)
+    if user_exists:
+        return {"error": "User already exists."}
+    
+    # Append the new user row to the USERS_SHEET_ID
+    append_row(USERS_SHEET_ID, new_user_row)
+
+    return RedirectResponse(url="/target", status_code=303)

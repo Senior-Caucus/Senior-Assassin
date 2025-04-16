@@ -5,7 +5,9 @@ from googleapiclient.http import MediaFileUpload
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
 import os
+from dotenv import load_dotenv
 
+load_dotenv(dotenv_path=".env.local")
 SERVICE_ACCOUNT_FILE = os.getenv("GOOGLE_SERVICE_ACCOUNT_PATH")
 SCOPES = ['https://www.googleapis.com/auth/drive.file']
 

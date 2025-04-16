@@ -2,11 +2,47 @@
 
 from fastapi import APIRouter, HTTPException, Header, Response
 from ..services.firebase_auth import verify_firebase_token
-from ..services.sheets import append_row, SESSIONS_SHEET_ID, USERS_SHEET_ID, METADATA_SHEET_ID, EVIDENCE_SHEET_ID
+from ..services.sheets import exists, append_row, get_row, SESSIONS_SHEET_ID, USERS_SHEET_ID
 import uuid
 import time
 
 router = APIRouter()
+
+def signed_up(session_id: str):
+    if not session_id:
+        return False
+    
+    # Check if the session ID exists in the Google Sheet
+    exists_result = exists(SESSIONS_SHEET_ID, session_id)
+    if not exists_result:
+        return False
+    
+    # Get the row corresponding to the session ID
+    row = get_row(SESSIONS_SHEET_ID, session_id)
+    if not row:
+        return False
+    
+    # Get the user email
+    email = row[2]  # Assuming the email is in the third column (index 2)
+
+    # Check if the user is signed up in the USERS_SHEET_ID
+    user_exists = exists(USERS_SHEET_ID, email)
+    if not user_exists:
+        return False
+    
+    return True
+
+
+def check_session(session_id: str):
+    if not session_id:
+        return False
+    
+    # Check if the session ID exists in the Google Sheet
+    exists_result = exists(SESSIONS_SHEET_ID, session_id)
+    if not exists_result:
+        return False
+    
+    return True
 
 @router.post("/login/verify")
 def login_verify(authorization: str = Header(...), response: Response = None):

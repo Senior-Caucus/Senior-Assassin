@@ -31,3 +31,26 @@ def append_row(spreadsheet_id, row: list, range="Sheet1!A:Z"):
         body=body
     ).execute()
     return result
+
+def exists(spreadsheet_id, pk: str, range="Sheet1!A:Z"):
+    result = sheets_service.spreadsheets().values().get(
+        spreadsheetId=spreadsheet_id,
+        range=range
+    ).execute()
+    values = result.get('values', [])
+    for value in values:
+        if value and value[0] == pk:
+            return True
+    return False
+
+# Get row by primary key
+def get_row(spreadsheet_id, pk: str, range="Sheet1!A:Z"):
+    result = sheets_service.spreadsheets().values().get(
+        spreadsheetId=spreadsheet_id,
+        range=range
+    ).execute()
+    values = result.get('values', [])
+    for value in values:
+        if value and value[0] == pk:
+            return value
+    return None

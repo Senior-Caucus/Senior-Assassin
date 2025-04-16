@@ -56,6 +56,6 @@ async function loginAndVerify() {
 
 // Attach login function to button
 document.getElementById("login")?.addEventListener("click", () => {
-  localStorage.setItem("postLoginRedirect", "/target");
+  localStorage.setItem("postLoginRedirect", "/signup");
   loginAndVerify();
 });

@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Signup{% endblock %}
+
+{% block content %}
+  <div class="homepage-bg">
+    <h2 class="nosifer-regular">Sign Up</h2>
+    <form action="/signup" method="post" enctype="multipart/form-data">
+      <div class="upload-section">
+        <label for="profilePic">Upload a profile picture (jpg/png):</label>
+        <input type="file" id="profilePic" name="profilePic" accept=".jpg, .jpeg, .png" required>
+      </div>
+      
+      <div class="schedule-section">
+        <h3>Schedule</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Period</th>
+              <th>Room Number</th>
+              <th>No Class (Free/Lunch)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for period in range(1, 11) %}
+            <tr>
+              <td>Period {{ period }}</td>
+              <td>
+                <input type="text" name="period{{ period }}_room" placeholder="Enter room number">
+              </td>
+              <td>
+                <input type="checkbox" name="period{{ period }}_noclass" value="true">
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      
+      <button type="submit">Sign Up</button>
+    </form>
+  </div>
+{% endblock %}
