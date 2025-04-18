@@ -2,7 +2,6 @@
 
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.templating import Jinja2Templates
 
 from ..config import templates
 from ..services.sheets import exists, SESSIONS_SHEET_ID
