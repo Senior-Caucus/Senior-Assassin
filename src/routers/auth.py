@@ -54,7 +54,7 @@ def login_verify(authorization: str = Header(...), response: Response = None):
     """
     # Remove "Bearer " prefix if present.
     token = authorization.replace("Bearer ", "")
-    email = verify_firebase_token(token)
+    email, full_name, admin = verify_firebase_token(token)
 
     # Generate a unique session ID.
     session_id = str(uuid.uuid4())
@@ -64,7 +64,7 @@ def login_verify(authorization: str = Header(...), response: Response = None):
 
     # the sessions google sheet header: session_id	timestamp	email
     # Append the session ID, timestamp, and email to the sessions Google Sheet.
-    append_row(SESSIONS_SHEET_ID, [session_id, timestamp, email])
+    append_row(SESSIONS_SHEET_ID, [session_id, timestamp, email, full_name, "TRUE" if admin else "FALSE"])
 
     # Set the session ID in a cookie with all desired parameters.
     response.set_cookie(

@@ -55,3 +55,19 @@ def upload_profile_picture(email: str, filepath: str, mime_type: str) -> str:
     """
     folder_id = _ensure_user_folder(email)
     return upload_file_to_drive("profile_pic.jpg", filepath, mime_type, parents=[folder_id])
+
+def download_profile_picture(email: str) -> str:
+    """
+    Download the profile picture from the user's Drive folder.
+    Returns the file ID of the downloaded picture.
+    """
+    folder_id = _ensure_user_folder(email)
+    query = (
+        f"name = 'profile_pic.jpg' and mimeType != 'application/vnd.google-apps.folder' "
+        f"and '{folder_id}' in parents"
+    )
+    res = drive_service.files().list(q=query, spaces='drive', fields='files(id)').execute()
+    files = res.get('files', [])
+    if not files:
+        raise FileNotFoundError("Profile picture not found.")
+    return files[0]['id']

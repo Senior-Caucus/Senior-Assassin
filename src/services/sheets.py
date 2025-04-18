@@ -54,3 +54,15 @@ def get_row(spreadsheet_id, pk: str, range="Sheet1!A:Z"):
         if value and value[0] == pk:
             return value
     return None
+
+# Check if a user is admin
+def check_admin(email: str) -> bool:
+    result = sheets_service.spreadsheets().values().get(
+        spreadsheetId=USERS_SHEET_ID,
+        range="Sheet1!A:Z"
+    ).execute()
+    values = result.get('values', [])
+    for value in values:
+        if value and value[0] == email and value[1] == "admin":
+            return True
+    return False

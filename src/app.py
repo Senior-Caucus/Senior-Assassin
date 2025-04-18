@@ -1,5 +1,3 @@
-# src/app.py
-
 import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, UploadFile, File
@@ -9,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 from .routers import admin, user, pages, auth
 from .config import templates
 from .services.sheets import get_row, append_row, SESSIONS_SHEET_ID, USERS_SHEET_ID
-from .services.drive import DRIVE_PICTURES_FOLDER_ID, upload_file_to_drive, drive_service
+from .services.drive import upload_profile_picture
 
 # Load environment variables
 from dotenv import load_dotenv
@@ -75,6 +73,9 @@ async def signup(request: Request, profilePic: UploadFile = File(...)):
     email = session_row[2] if len(session_row) > 2 else None
     if not email:
         return {"error": "Email not found in session."}
+    full_name = session_row[3] if len(session_row) > 3 else None
+    if not full_name:
+        full_name = "None"
 
     # Build the schedule list for periods 1-10
     # For each period, if the checkbox is checked then it's considered no class (set as "None"),
@@ -99,11 +100,12 @@ async def signup(request: Request, profilePic: UploadFile = File(...)):
         "user",         # default role is user
         "None",         # currentTarget
         "None",         # eliminationHistory
-        str(time.time()), # createdAt
-        "None",         # fullName
+        str(round(time.time())), # createdAt
+        full_name,        # fullName
         "False",        # waiting (not waiting for anything upon signup)
-        "None",         # picturePath (to be handled later)
-        schedule_str      # schedule as a comma separated string
+        f"{email}/profile_pic.jpg",         # picturePath (to be handled later)
+        schedule_str,    # schedule as a comma separated string,
+        "True"          # alive
     ]
 
     # Check if the user already exists in the USERS_SHEET_ID
@@ -115,38 +117,12 @@ async def signup(request: Request, profilePic: UploadFile = File(...)):
     append_row(USERS_SHEET_ID, new_user_row)
 
     # Save profile picture to Drive
-    # Write uploaded picture to a temporary file
     temp_path = f"/tmp/{email}_profile_pic.jpg"
     with open(temp_path, "wb") as f:
         f.write(await profilePic.read())
 
-    # Determine parent pictures folder ID (set via env var or default)
-    parent_folder_id = DRIVE_PICTURES_FOLDER_ID
+    _ = upload_profile_picture(email, temp_path, profilePic.content_type)
 
-    # Check if a folder for this email exists under the parent folder
-    query = (
-        f"name = '{email}' and mimeType = 'application/vnd.google-apps.folder' "
-        f"and '{parent_folder_id}' in parents"
-    )
-    res = drive_service.files().list(q=query, spaces='drive', fields='files(id)').execute()
-    files = res.get('files', [])
-    if files:
-        folder_id = files[0]['id']
-    else:
-        folder_meta = {
-            'name': email,
-            'mimeType': 'application/vnd.google-apps.folder',
-            'parents': [parent_folder_id]
-        }
-        folder = drive_service.files().create(body=folder_meta, fields='id').execute()
-        folder_id = folder.get('id')
-
-    # Upload the profile picture into the user's folder
-    file_id = upload_file_to_drive(
-        "profile_pic.jpg", temp_path, profilePic.content_type, parents=[folder_id]
-    )
-
-    # Clean up the temporary file
     os.remove(temp_path)
 
     return RedirectResponse(url="/target", status_code=303)

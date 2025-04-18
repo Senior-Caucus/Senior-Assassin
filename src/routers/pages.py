@@ -4,7 +4,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 
 from ..config import templates
-from ..services.sheets import exists, SESSIONS_SHEET_ID
+from ..services.sheets import get_row, SESSIONS_SHEET_ID
 from .auth import check_session, signed_up
 
 router = APIRouter()
@@ -26,7 +26,13 @@ def target_page(request: Request):
     # If the user is already signed up, redirect to the target page
     is_signed_up = signed_up(request.cookies.get("session_id"))
     if is_signed_up:
-        return RedirectResponse(url="/target", status_code=302)
+        # We need to check if the user is an admin
+        row = get_row(SESSIONS_SHEET_ID, request.cookies.get("session_id"))
+        print(row)
+        if row and len(row) >= 5 and row[4] == "TRUE":
+            return RedirectResponse(url="/admin/dashboard", status_code=302)
+        else:
+            return RedirectResponse(url="/target", status_code=302)
 
     return templates.TemplateResponse("signup.html", {"request": request})
 
