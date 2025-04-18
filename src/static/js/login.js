@@ -28,7 +28,7 @@ async function loginAndVerify() {
     const idToken = await user.getIdToken();
 
     // Send ID token to FastAPI backend
-    const response = await fetch("http://localhost:8000/auth/login/verify", {
+    const response = await fetch("/auth/login/verify", {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${idToken}`,
