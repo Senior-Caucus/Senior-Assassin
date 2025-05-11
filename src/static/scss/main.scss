@@ -54,7 +54,7 @@ body, html {
     text-shadow: 0 0 5px $accent-color;
   }
   50% {
-    text-shadow: 0 0 20px $accent-color;
+    text-shadow: 0 0 18px $accent-color;
   }
 }
 
@@ -631,18 +631,18 @@ footer {
    Signup page mobile fixes – appended overridess
    ---------------------------------------------------- */
 
-/* Allow vertical scrolling while preventing horizontal spill */
-body, html {
-  overflow-x: hidden;
-  overflow-y: auto;
-}
+// /* Allow vertical scrolling while preventing horizontal spill */
+// body, html {
+//   overflow-x: hidden;
+//   overflow-y: auto;
+// }
 
-/* Permit the background container to grow and scroll */
-.homepage-bg {
-  height: auto;
-  min-height: 100vh;
-  overflow-y: auto;
-}
+// /* Permit the background container to grow and scroll */
+// .homepage-bg {
+//   height: auto;
+//   min-height: 100vh;
+//   overflow-y: auto;
+// }
 
 /* Sleeker check‑box styling */
 .signup-form input[type="checkbox"] {
@@ -681,37 +681,32 @@ body, html {
    Signup form fixed-bg scrolling only content
    ---------------------------------------------------- */
 
-/* Prevent page-level scrolling */
-body, html {
-  overflow-x: hidden;
-  overflow-y: hidden;
-}
+// /* Prevent page-level scrolling */
+// body, html {
+//   overflow-x: hidden;
+//   overflow-y: hidden;
+// }
 
-/* Keep background full-screen and static */
-.homepage-bg {
-  height: 100vh;
-  overflow: hidden;
-}
+// /* Keep background full-screen and static */
+// .homepage-bg {
+//   height: 100vh;
+//   overflow: hidden;
+// }
 
-/* Enable scrolling only for the form container */
-.signup-form {
-  max-height: calc(100vh - 10vh);
-}
+// /* Adjust on small screens */
+// @media (max-width: 600px) {
+//   .signup-form {
+//     max-height: calc(100vh - 10vh);
+//     width: 90vw;
+//   }
+// }
 
-/* Adjust on small screens */
-@media (max-width: 600px) {
-  .signup-form {
-    max-height: calc(100vh - 10vh);
-    width: 90vw;
-  }
-}
-
-@media (min-width: 600px) {
-  .signup-form {
-    width: 60vw;
-  }
+// @media (min-width: 600px) {
+//   .signup-form {
+//     width: 60vw;
+//   }
   
-}
+// }
 
 /* ----------------------------------------------------
    Multi-step form wizard styles
