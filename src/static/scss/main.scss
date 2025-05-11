@@ -547,7 +547,8 @@ footer {
   max-width: 600px;
   margin: 0 auto;
   padding: 2rem;
-  padding-bottom: 72px;   /* Ensure room for footer */
+  padding-bottom: 0;
+  margin-bottom: 72px;   /* Ensure room for footer */
   border-radius: 8px;
   box-sizing: border-box;
   overflow-y: auto;      /* Scroll only the form */
