@@ -734,3 +734,11 @@ footer {
   background: #555;
   cursor: not-allowed;
 }
+
+/* Mobile-only footer spacer for step 1 */
+@media (max-width: 600px) {
+  .form-step[data-step="1"] .footer-spacer {
+    display: block !important;
+    height: 64px;
+  }
+}
