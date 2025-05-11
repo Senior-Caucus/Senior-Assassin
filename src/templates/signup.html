@@ -22,7 +22,7 @@
             <tbody>
               {% for period in range(1, 11) %}
               <tr>
-                <td>Period {{ period }}</td>
+                <td>{{ period }}</td>
                 <td>
                   <input type="text" id="period{{ period }}_room" name="period{{ period }}_room" placeholder="Enter room number">
                 </td>
@@ -37,6 +37,7 @@
           </table>
         </div>
         <div class="navigation-buttons">
+          <button type="button" class="prev-btn" disabled>Previous</button>
           <button type="button" class="next-btn">Next</button>
         </div>
       </div>
@@ -45,7 +46,7 @@
       <div class="form-step" data-step="2">
         <h3>Step 2/3</h3>
         <h4>Enter Your Height</h4>
-        <div class="flex-row">
+        <div class="flex-row half-half">
           <div class="approx-height-feet">
             <label for="approxHeightFeet">Feet</label>
             <input type="number" id="approxHeightFeet" name="approxHeightFeet"
@@ -85,6 +86,31 @@
           }
           document.querySelectorAll('.next-btn').forEach(btn => {
             btn.addEventListener('click', () => {
+              // Validate current step before proceeding to the next
+              // If we are on the first step, make sure the schedule is filled out for every period
+              if (currentStep === 1) {
+                let allFilled = true;
+                document.querySelectorAll('.schedule-section tbody tr').forEach(function(row) {
+                  const roomInput = row.querySelector('input[type="text"]');
+                  const noClassCheckbox = row.querySelector('input[type="checkbox"]');
+                  if (!noClassCheckbox.checked && roomInput.value.trim() === '') {
+                    allFilled = false;
+                  }
+                });
+                if (!allFilled) {
+                  alert('Please fill out all required fields in your schedule.');
+                  return;
+                }
+              } else if (currentStep === 2) {
+                // Validate height inputs
+                const feet = document.getElementById('approxHeightFeet').value;
+                const inches = document.getElementById('approxHeightInches').value;
+                if (feet < 3 || feet > 7 || inches < 0 || inches > 11) {
+                  alert('Please enter a valid height.');
+                  return;
+                }
+              }
+
               if (currentStep < steps.length) { currentStep++; showStep(currentStep); }
             });
           });
@@ -108,6 +134,18 @@
           });
           showStep(currentStep);
         });
+
+        // File size validation
+        // Limit file size to 20MB
+        // This is a simple client-side check
+        const uploadField = document.getElementById("profilePic");
+
+        uploadField.onchange = function() {
+            if(this.files[0].size > 2097152 * 10) {
+              alert("File is too big! Please select a file smaller than 20MB.");
+              this.value = "";
+            }
+        };
       </script>
     </form>
   </div>
