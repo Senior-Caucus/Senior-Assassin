@@ -1,9 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Nosifer&display=swap');
-
 // Variables
 $primary-color: #6a001e;
 $secondary-color: #fff1f5;
 $accent-color: #8b0000;
+$light-text-color: #9d9d9d;
 $font-stack: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 $padding: 1rem;
 
@@ -26,11 +25,22 @@ body, html {
   overflow: hidden;
 }
 
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+
 // Font class
 .nosifer-regular {
-  font-family: sans-serif;
+  // font-family: sans-serif;
   font-weight: 400;
   font-style: normal;
+  font-size: 5rem;
+}
+
+#countdown {
+  color: $accent-color;
+  font-size: 2rem;
 }
 
 // Subtle glowing effect
@@ -68,20 +78,34 @@ body, html {
   margin: 0;
 
   @media (max-width: 600px) {
-    font-size: 3rem;
+    font-size: 5rem;
   }
+}
+
+.homepage-bg h3 {
+  font-size: 2rem;
+  color: $accent-color;
+  margin-top: -1rem;
+  margin-bottom: 1.5rem;
+}
+
+.homepage-bg h4, #profilePicLabel {
+  font-size: 1.5rem;
+  color: $light-text-color;
+  margin-top: -1rem;
+  margin-bottom: 1.5rem;
 }
 
 // Login Button (refined for vibe)
 .homepage-bg button#login {
-  font-size: 1.25rem;
-  padding: 0.9rem 2.2rem;
+  font-size: 1.875rem;
+  padding: 1.25rem 3.01rem;
   background-color: transparent;
-  border: 2px solid $accent-color;
+  border: 3px solid $accent-color;
   color: $accent-color;
   text-transform: uppercase;
   letter-spacing: 1px;
-  font-weight: bold;
+  font-weight: bolder;
   border-radius: 5px;
   text-decoration: none;
   transition: all 0.25s ease-in-out;
@@ -352,7 +376,6 @@ button#login {
   .awaiting-screen h3 {
     font-size: 2rem;
     color: $secondary-color;
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.4);
     margin: 0;
   }
 
@@ -494,13 +517,18 @@ button#login {
 // Footer
 footer {
   position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   bottom: 0;
+  padding: 0;
+  margin: 0;
   width: 100%;
   text-align: center;
-  padding: $padding;
   font-size: 0.9rem;
   color: #aaa;
   background: rgba(0, 0, 0, 0.4);
+  height: 10vh;
 }
 
 /* ----------------------------------------------------
@@ -512,12 +540,16 @@ footer {
   gap: 1.5rem;
   width: 100%;
   max-width: 600px;
-  background: rgba(0, 0, 0, 0.5);
+  margin: 0 auto;
   padding: 2rem;
-  border: 2px solid $accent-color;
+  padding-bottom: 5vh;   /* Ensure room for footer */
   border-radius: 8px;
-  box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
-  overflow-y: scroll;
+  box-sizing: border-box;
+  overflow-y: auto;      /* Scroll only the form */
+}
+
+.signup-form element {
+  max-width: 600px;
 }
 
 .signup-form label {
@@ -577,8 +609,21 @@ footer {
   margin: 0 auto;
 }
 
+/* Checkbox label and disabled input styling */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  justify-content: center;
+}
+
+.signup-form input[type="text"]:disabled {
+  background: #333;
+  color: #777;
+}
+
 /* ----------------------------------------------------
-   Signup page mobile fixes – appended overrides
+   Signup page mobile fixes – appended overridess
    ---------------------------------------------------- */
 
 /* Allow vertical scrolling while preventing horizontal spill */
@@ -653,5 +698,40 @@ body, html {
 @media (max-width: 600px) {
   .signup-form {
     max-height: calc(100vh - 6rem);
+    width: 90vw;
   }
+}
+
+@media (min-width: 600px) {
+  .signup-form {
+    width: 60vw;
+  }
+  
+}
+
+/* ----------------------------------------------------
+   Multi-step form wizard styles
+   ---------------------------------------------------- */
+.form-step {
+  display: none;
+}
+.form-step.active {
+  display: block;
+}
+.navigation-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+.navigation-buttons button {
+  padding: 0.5rem 1rem;
+  background-color: $accent-color;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+.navigation-buttons button:disabled {
+  background: #555;
+  cursor: not-allowed;
 }

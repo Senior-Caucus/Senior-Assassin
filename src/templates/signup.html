@@ -4,47 +4,111 @@
 
 {% block content %}
   <div class="homepage-bg">
-    <h2 class="nosifer-regular">Sign Up</h2>
     <form class="signup-form" action="/signup" method="post" enctype="multipart/form-data">
-      <div class="upload-section">
-        <label for="profilePic">Upload a profile picture (jpg/png):</label>
-        <input type="file" id="profilePic" name="profilePic" accept=".jpg, .jpeg, .png" required>
-      </div>
-      
-      <div class="schedule-section">
-        <h3>Schedule</h3>
-        <h4>This should match up with Talos</h4>
-        <table>
-          <thead>
-            <tr>
-              <th>Period</th>
-              <th>Room Number</th>
-              <th>No Class (Free/Lunch)</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% for period in range(1, 11) %}
-            <tr>
-              <td>Period {{ period }}</td>
-              <td>
-                <input type="text" name="period{{ period }}_room" placeholder="Enter room number">
-              </td>
-              <td>
-                <input type="checkbox" name="period{{ period }}_noclass" value="true">
-              </td>
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
+
+      <!-- Step 1 -->
+      <div class="form-step" data-step="1">
+        <h3>Step 1/3</h3>
+        <div class="schedule-section">
+          <h4>Enter Your Class Schedule</h4>
+          <table>
+            <thead>
+              <tr>
+                <th>Period</th>
+                <th>Room Number</th>
+                <th>No Class</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for period in range(1, 11) %}
+              <tr>
+                <td>Period {{ period }}</td>
+                <td>
+                  <input type="text" id="period{{ period }}_room" name="period{{ period }}_room" placeholder="Enter room number">
+                </td>
+                <td>
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="period{{ period }}_noclass" name="period{{ period }}_noclass" value="true">
+                  </label>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="navigation-buttons">
+          <button type="button" class="next-btn">Next</button>
+        </div>
       </div>
 
-      <div class="approx-height">
-        <label for="approxHeight">Approximate Height:</label>
-        <input type="number" id="approxHeight" name="approxHeight"
-               placeholder="Inches" min="36" max="90" step="1" required>
+      <!-- Step 2 -->
+      <div class="form-step" data-step="2">
+        <h3>Step 2/3</h3>
+        <h4>Enter Your Height</h4>
+        <div class="flex-row">
+          <div class="approx-height-feet">
+            <label for="approxHeightFeet">Feet</label>
+            <input type="number" id="approxHeightFeet" name="approxHeightFeet"
+                  placeholder="Feet" min="3" max="7" step="1" required>
+          </div>
+          <div class="approx-height-inches">
+            <label for="approxHeightInches">Inches</label>
+            <input type="number" id="approxHeightInches" name="approxHeightInches"
+                  placeholder="Inches" min="0" max="11" step="1" required>
+          </div>
+        </div>
+        <div class="navigation-buttons">
+          <button type="button" class="prev-btn">Previous</button>
+          <button type="button" class="next-btn">Next</button>
+        </div>
       </div>
-      
-      <button type="submit">Sign Up</button>
+
+      <!-- Step 3 -->
+      <div class="form-step" data-step="3">
+        <h3>Step 3/3</h3>
+        <div class="upload-section">
+          <label for="profilePic" id="profilePicLabel">Upload a front portrait of your face (jpg/png):</label>
+          <input type="file" id="profilePic" name="profilePic" accept=".jpg, .jpeg, .png" required>
+        </div>
+        <div class="navigation-buttons">
+          <button type="button" class="prev-btn">Previous</button>
+          <button type="submit">Sign Up</button>
+        </div>
+      </div>
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function() {
+          let currentStep = 1;
+          const steps = document.querySelectorAll('.form-step');
+          function showStep(n) {
+            steps.forEach(s => s.classList.toggle('active', parseInt(s.dataset.step) === n));
+          }
+          document.querySelectorAll('.next-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              if (currentStep < steps.length) { currentStep++; showStep(currentStep); }
+            });
+          });
+          document.querySelectorAll('.prev-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+              if (currentStep > 1) { currentStep--; showStep(currentStep); }
+            });
+          });
+          // Preserve schedule clearing logic
+          document.querySelectorAll('.schedule-section tbody tr').forEach(function(row) {
+            const roomInput = row.querySelector('input[type="text"]');
+            const noClassCheckbox = row.querySelector('input[type="checkbox"]');
+            noClassCheckbox.addEventListener('change', function() {
+              if (this.checked) {
+                roomInput.value = '';
+                roomInput.disabled = true;
+              } else {
+                roomInput.disabled = false;
+              }
+            });
+          });
+          showStep(currentStep);
+        });
+      </script>
     </form>
   </div>
 {% endblock %}

@@ -50,7 +50,7 @@ async function loginAndVerify() {
     window.location.href = redirectTo;
   } catch (err) {
     console.error("❌ Login failed:", err);
-    alert("Login failed. Please try again.");
+    alert("Login failed. Please try again with a senior stuy.edu email account.");
   }
 }
 
@@ -59,3 +59,27 @@ document.getElementById("login")?.addEventListener("click", () => {
   localStorage.setItem("postLoginRedirect", "/signup");
   loginAndVerify();
 });
+
+(function() {
+  const countdownEl = document.getElementById('countdown');
+  function update() {
+    // May 20, 2025 00:00 EST (UTC-4)
+    const target = new Date('2025-05-20T00:00:00-04:00');
+    const now = new Date();
+    let diff = target - now;
+    if (diff <= 0) {
+      countdownEl.textContent = 'Signup period has ended.';
+      return;
+    }
+    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+    diff %= 1000 * 60 * 60 * 24;
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    diff %= 1000 * 60 * 60;
+    const minutes = Math.floor(diff / (1000 * 60));
+    diff %= 1000 * 60;
+    const seconds = Math.floor(diff / 1000);
+    countdownEl.textContent = `${days}d ${hours}h ${minutes}m ${seconds}s left to sign up`;
+  }
+  update();
+  setInterval(update, 1000);
+})();

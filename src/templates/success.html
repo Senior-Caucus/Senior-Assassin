@@ -4,8 +4,11 @@
 
 {% block content %}
   <div class="awaiting-screen">
-    <h2 class="nosifer-regular">SUCCESS</h2>
-    <h3>you have signed up successfully</h3>
-    <h3>game starts on May 19th</h3>
+    <h2 class="nosifer-regular">SUCCESSFULLY SIGNED UP</h2>
+    <h3 id="countdown"></h3>
   </div>
+{% endblock %}
+
+{% block scripts %}
+  <script src="/static/js/success.js" type="module"></script>
 {% endblock %}
