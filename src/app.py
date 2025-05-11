@@ -92,6 +92,12 @@ async def signup(request: Request, profilePic: UploadFile = File(...)):
     # Convert the schedule list to a comma separated string
     schedule_str = ",".join(schedule_list)
 
+    # Get their height (approxHeightFeet, approxHeightInches)
+    approxHeightFeet = form.get("approxHeightFeet")
+    approxHeightInches = form.get("approxHeightInches")
+    if not approxHeightFeet or not approxHeightInches:
+        return {"error": "Height not provided."}
+
     # Construct the new user row using the header:
     # email, role, currentTarget, eliminationHistory, createdAt, fullName, waiting, picturePath, schedule
     import time
@@ -105,7 +111,9 @@ async def signup(request: Request, profilePic: UploadFile = File(...)):
         "False",        # waiting (not waiting for anything upon signup)
         f"{email}/profile_pic.jpg",         # picturePath (to be handled later)
         schedule_str,    # schedule as a comma separated string,
-        "True"          # alive
+        "True",          # alive
+        approxHeightFeet, # approxHeightFeet
+        approxHeightInches # approxHeightInches
     ]
 
     # Check if the user already exists in the USERS_SHEET_ID
