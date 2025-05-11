@@ -695,13 +695,13 @@ body, html {
 
 /* Enable scrolling only for the form container */
 .signup-form {
-  max-height: calc(100vh - 8rem);
+  max-height: calc(100vh - 10vh);
 }
 
 /* Adjust on small screens */
 @media (max-width: 600px) {
   .signup-form {
-    max-height: calc(100vh - 6rem);
+    max-height: calc(100vh - 10vh);
     width: 90vw;
   }
 }
