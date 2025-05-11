@@ -23,7 +23,7 @@ def target_page(request: Request):
     if not verified:
         return templates.TemplateResponse("index.html", {"request": request})
     
-    # If the user is already signed up, redirect to the target page
+    # If the user is already signed up, redirect to the success page
     is_signed_up = signed_up(request.cookies.get("session_id"))
     if is_signed_up:
         # We need to check if the user is an admin
@@ -32,7 +32,7 @@ def target_page(request: Request):
         if row and len(row) >= 5 and row[4] == "TRUE":
             return RedirectResponse(url="/admin/dashboard", status_code=302)
         else:
-            return RedirectResponse(url="/target", status_code=302)
+            return RedirectResponse(url="/success", status_code=302)
 
     return templates.TemplateResponse("signup.html", {"request": request})
 
@@ -42,6 +42,13 @@ def target_page(request: Request):
     if not verified:
         return templates.TemplateResponse("index.html", {"request": request})
     return templates.TemplateResponse("target.html", {"request": request})
+
+@router.get("/success", response_class=HTMLResponse)
+def target_page(request: Request):
+    verified = check_session(request.cookies.get("session_id"))
+    if not verified:
+        return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("success.html", {"request": request})
 
 @router.get("/awaiting", response_class=HTMLResponse)
 def get_awaiting_page(request: Request):

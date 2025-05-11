@@ -5,7 +5,7 @@
 {% block content %}
   <div class="homepage-bg">
     <h2 class="nosifer-regular">Sign Up</h2>
-    <form action="/signup" method="post" enctype="multipart/form-data">
+    <form class="signup-form" action="/signup" method="post" enctype="multipart/form-data">
       <div class="upload-section">
         <label for="profilePic">Upload a profile picture (jpg/png):</label>
         <input type="file" id="profilePic" name="profilePic" accept=".jpg, .jpeg, .png" required>
@@ -13,6 +13,7 @@
       
       <div class="schedule-section">
         <h3>Schedule</h3>
+        <h4>This should match up with Talos</h4>
         <table>
           <thead>
             <tr>
@@ -35,6 +36,12 @@
             {% endfor %}
           </tbody>
         </table>
+      </div>
+
+      <div class="approx-height">
+        <label for="approxHeight">Approximate Height:</label>
+        <input type="number" id="approxHeight" name="approxHeight"
+               placeholder="Inches" min="36" max="90" step="1" required>
       </div>
       
       <button type="submit">Sign Up</button>

@@ -28,7 +28,7 @@ body, html {
 
 // Font class
 .nosifer-regular {
-  font-family: 'Nosifer', cursive;
+  font-family: sans-serif;
   font-weight: 400;
   font-style: normal;
 }
@@ -501,4 +501,157 @@ footer {
   font-size: 0.9rem;
   color: #aaa;
   background: rgba(0, 0, 0, 0.4);
+}
+
+/* ----------------------------------------------------
+   Signup Form Enhancements
+   ---------------------------------------------------- */
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 600px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 2rem;
+  border: 2px solid $accent-color;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+  overflow-y: scroll;
+}
+
+.signup-form label {
+  display: block;
+  margin-bottom: 0.25rem;
+  color: $secondary-color;
+  font-weight: 600;
+}
+
+.signup-form input[type="file"],
+.signup-form input[type="text"],
+.signup-form input[type="number"] {
+  width: 100%;
+  padding: 0.5rem;
+  background: #1a1a1a;
+  border: 1px solid #666;
+  color: white;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+/* Schedule table inside the form */
+.schedule-section table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0.5rem;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.schedule-section th,
+.schedule-section td {
+  padding: 0.75rem;
+  border: 1px solid $accent-color;
+  text-align: center;
+}
+
+/* Form submit button */
+.signup-form button[type="submit"] {
+  align-self: center;
+  font-size: 1.25rem;
+  padding: 0.75rem 2rem;
+  background-color: $accent-color;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+  box-shadow: 0 0 12px rgba(139, 0, 0, 0.5);
+
+  &:hover {
+    background-color: darken($accent-color, 10%);
+    transform: scale(1.03);
+    box-shadow: 0 0 18px rgba(255, 0, 0, 0.8);
+  }
+}
+.schedule-section td input[type="checkbox"] {
+  margin: 0 auto;
+}
+
+/* ----------------------------------------------------
+   Signup page mobile fixes – appended overrides
+   ---------------------------------------------------- */
+
+/* Allow vertical scrolling while preventing horizontal spill */
+body, html {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Permit the background container to grow and scroll */
+.homepage-bg {
+  height: auto;
+  min-height: 100vh;
+  overflow-y: auto;
+}
+
+/* Sleeker check‑box styling */
+.signup-form input[type="checkbox"] {
+  appearance: none;
+  width: 1.2rem;
+  height: 1.2rem;
+  border: 2px solid $accent-color;
+  border-radius: 3px;
+  background: #1a1a1a;
+  position: relative;
+  cursor: pointer;
+}
+
+.signup-form input[type="checkbox"]:checked {
+  background: $accent-color;
+}
+
+.signup-form input[type="checkbox"]:checked::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  width: 3px;
+  height: 7px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Keep checkbox centered in its table cell */
+.schedule-section td input[type="checkbox"] {
+  margin: 0 auto;
+}
+
+/* ----------------------------------------------------
+   Signup form fixed-bg scrolling only content
+   ---------------------------------------------------- */
+
+/* Prevent page-level scrolling */
+body, html {
+  overflow-x: hidden;
+  overflow-y: hidden;
+}
+
+/* Keep background full-screen and static */
+.homepage-bg {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Enable scrolling only for the form container */
+.signup-form {
+  max-height: calc(100vh - 8rem);
+  padding-bottom: 4rem;           /* bottom space for footer */
+}
+
+/* Adjust on small screens */
+@media (max-width: 600px) {
+  .signup-form {
+    max-height: calc(100vh - 6rem);
+  }
 }
