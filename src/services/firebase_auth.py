@@ -13,7 +13,7 @@ if not firebase_admin._apps:
     cred = credentials.Certificate(cred_path)
     firebase_admin.initialize_app(cred)
 
-def verify_firebase_token(id_token: str) -> Tuple[str, Optional[str]]:
+def verify_firebase_token(id_token: str) -> Tuple[str, Optional[str], bool]:
     """
     Verifies the Firebase ID token, checks the email domain and '5', 
     and returns a tuple (email, full_name). Raises HTTPException on failure.

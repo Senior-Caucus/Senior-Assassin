@@ -5,6 +5,10 @@ import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
+  getRedirectResult,
+  signInWithRedirect,
+  setPersistence,
+  browserLocalPersistence
 } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-auth.js";
 
 // Firebase config
@@ -18,6 +22,32 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+
+// Handle redirect result (for redirect-based login flow)
+getRedirectResult(auth)
+  .then(async result => {
+    if (result && result.user) {
+      const user = result.user;
+      const idToken = await user.getIdToken();
+      // Send ID token to FastAPI backend
+      const response = await fetch("/auth/login/verify", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${idToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+      if (!response.ok) throw new Error("Token verification failed");
+      const data = await response.json();
+      localStorage.setItem("userEmail", data.email);
+      const redirectTo = localStorage.getItem("postLoginRedirect") || "/";
+      localStorage.removeItem("postLoginRedirect");
+      window.location.href = redirectTo;
+    }
+  })
+  .catch(err => {
+    console.error("❌ Redirect login failed:", err);
+  });
 
 // Function to handle login and post-login logic
 async function loginAndVerify() {
@@ -57,7 +87,13 @@ async function loginAndVerify() {
 // Attach login function to button
 document.getElementById("login")?.addEventListener("click", () => {
   localStorage.setItem("postLoginRedirect", "/signup");
-  loginAndVerify();
+  // Use localStorage persistence and redirect flow
+  setPersistence(auth, browserLocalPersistence)
+    .then(() => signInWithRedirect(auth, provider))
+    .catch(err => {
+      console.warn("Could not use redirect persistence, falling back to popup:", err);
+      loginAndVerify();
+    });
 });
 
 (function() {
