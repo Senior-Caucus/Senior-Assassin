@@ -6,7 +6,7 @@ import {
   GoogleAuthProvider,
   signInWithPopup,
   setPersistence,
-  browserLocalPersistence,
+  inMemoryPersistence,
 } from "https://www.gstatic.com/firebasejs/9.13.0/firebase-auth.js";
 
 // Firebase config
@@ -20,12 +20,13 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const provider = new GoogleAuthProvider();
+provider.setCustomParameters({ prompt: 'select_account' });
 
 // Function to handle login and post-login logic
 async function loginAndVerify() {
   try {
     // Use localStorage if sessionStorage is unavailable
-    await setPersistence(auth, browserLocalPersistence);
+    await setPersistence(auth, inMemoryPersistence);
     // Trigger Google sign-in popup
     const result = await signInWithPopup(auth, provider);
     const user = result.user;
