@@ -44,7 +44,6 @@
       </ol>
     </li>
     <li>You must send in video evidence that you have marked your target otherwise the kill will be invalidated</li>
-    <li>Players will be able to withdraw from the game at any point via the assassin portal</li>
   </ol>
 
   <p>
@@ -66,6 +65,7 @@
         <h3>Step 1/3</h3>
         <div class="schedule-section">
           <h4>Enter Your Class Schedule</h4>
+          <h5>You may indicate A/B day classes by writing<br />(A) or (B) next to your class name<br />Example: 380 (A)</h5>
           <table>
             <thead>
               <tr>
@@ -126,6 +126,7 @@
         <h3>Step 3/3</h3>
         <div class="upload-section">
           <label for="profilePic" id="profilePicLabel">Upload a front portrait of your face (jpg/png)</label>
+          <h5>Please upload a recent picture for your assassin to identify you</h5>
           <input type="file" id="profilePic" name="profilePic" accept=".jpg, .jpeg, .png" required>
         </div>
         <div class="navigation-buttons">
@@ -180,7 +181,7 @@
           });
           document.querySelectorAll('.prev-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-              if (currentStep > 1) { currentStep--; showStep(currentStep); }
+              if (currentStep > 0) { currentStep--; showStep(currentStep); }
             });
           });
           // Preserve schedule clearing logic
