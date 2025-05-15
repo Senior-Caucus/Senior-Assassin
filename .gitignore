@@ -23,6 +23,7 @@ src/secrets/*
 *.pid
 *.db
 *.sqlite3
+*.out
 
 # macOS
 .DS_Store
