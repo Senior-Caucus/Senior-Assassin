@@ -753,3 +753,18 @@ footer {
   text-align: left;
   margin: 0 auto;
 }
+
+.rules-section-add {
+   /* make it size itself within the 100vh container */
+  width: 90%;             /* or whatever max width you want */
+  max-width: 800px;       /* caps the width on large screens */
+  
+  /* allow it to scroll if the content is taller than the viewport */
+  max-height: calc(100vh - 4rem); /* account for .homepage-bg padding */
+  overflow-y: auto;       /* vertical scrollbar when needed */
+  overflow-x: hidden;     /* never horizontal scroll */
+
+  /* optional padding / background so text never hits the edges */
+  padding: 1rem;
+  box-sizing: border-box;
+}
