@@ -741,4 +741,15 @@ footer {
     display: block !important;
     height: 64px;
   }
+
+  .form-step[data-step="0"] .footer-spacer {
+    display: block !important;
+    height: 64px;
+  }
+}
+
+.rules-section {
+  // keep text to the left
+  text-align: left;
+  margin: 0 auto;
 }
