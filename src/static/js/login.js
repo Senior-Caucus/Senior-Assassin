@@ -59,7 +59,7 @@ async function loginAndVerify() {
   } catch (err) {
     console.error("❌ Login failed:", err);
     // try one more time in case of popup blocked
-    alert("Login failed. Please try again, make sure your browser does not block popups, and make sure you are using a senior stuy.edu email account.");
+    alert("Login failed. Make sure your browser does not block popups. Confirm that you are using a senior stuy.edu email account.");
   }
 }
 

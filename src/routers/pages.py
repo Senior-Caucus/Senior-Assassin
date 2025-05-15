@@ -17,6 +17,10 @@ def get_index(request: Request):
 def get_login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
+@router.get("/rules", response_class=HTMLResponse)
+def get_rules_page(request: Request):
+    return templates.TemplateResponse("rules.html", {"request": request})
+
 @router.get("/signup", response_class=HTMLResponse)
 def target_page(request: Request):
     verified = check_session(request.cookies.get("session_id"))
