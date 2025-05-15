@@ -140,6 +140,11 @@
           const steps = document.querySelectorAll('.form-step');
           function showStep(n) {
             steps.forEach(s => s.classList.toggle('active', parseInt(s.dataset.step) === n));
+            // scroll to the top of the active step
+            const activeStep = document.querySelector('.form-step.active');
+            if (activeStep) {
+              activeStep.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
           }
           document.querySelectorAll('.next-btn').forEach(btn => {
             btn.addEventListener('click', () => {
