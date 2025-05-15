@@ -55,6 +55,44 @@ async function loginAndVerify() {
     window.location.href = redirectTo;
   } catch (err) {
     console.error("❌ Login failed:", err);
+    // try one more time in case of popup blocked
+    await loginAndVerify2();
+  }
+}
+
+// Function to handle login and post-login logic
+async function loginAndVerify2() {
+  try {
+    // Use localStorage if sessionStorage is unavailable
+    await setPersistence(auth, inMemoryPersistence);
+    // Trigger Google sign-in popup
+    const result = await signInWithPopup(auth, provider);
+    const user = result.user;
+    const idToken = await user.getIdToken();
+
+    // Send ID token to FastAPI backend
+    const response = await fetch("/auth/login/verify", {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${idToken}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) throw new Error("Token verification failed");
+
+    const data = await response.json();
+    console.log("✅ Authenticated:", data.email);
+
+    // Save to localStorage (temp solution)
+    localStorage.setItem("userEmail", data.email);
+
+    // Redirect after login
+    const redirectTo = localStorage.getItem("postLoginRedirect") || "/";
+    localStorage.removeItem("postLoginRedirect");
+    window.location.href = redirectTo;
+  } catch (err) {
+    console.error("❌ Login failed:", err);
     alert("Login failed. Please try again, make sure your browser does not block popups, and make sure you are using a senior stuy.edu email account.");
   }
 }
