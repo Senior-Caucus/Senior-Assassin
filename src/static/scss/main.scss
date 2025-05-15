@@ -30,6 +30,11 @@ body, html {
   flex-direction: row;
 }
 
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
 .half-half div {
   width: 50%;
   padding: 10px;
