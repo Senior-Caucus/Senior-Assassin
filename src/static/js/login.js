@@ -55,7 +55,7 @@ async function loginAndVerify() {
     window.location.href = redirectTo;
   } catch (err) {
     console.error("❌ Login failed:", err);
-    alert("Login failed. Please try again with a senior stuy.edu email account.");
+    alert("Login failed. Please try again, make sure your browser does not block popups, and make sure you are using a senior stuy.edu email account.");
   }
 }
 

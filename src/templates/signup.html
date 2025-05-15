@@ -5,6 +5,52 @@
 {% block content %}
   <div class="homepage-bg">
     <form class="signup-form" action="/signup" method="post" enctype="multipart/form-data">
+	<div class="form-step" data-step="0">
+		<h3>Rules and Guidelines</h3>
+		<div class="rules-section">
+			  <p>
+    Please read the following rules and guidelines carefully. Failure to follow any of these rules will result in immediate disqualification.
+  </p>
+  <ol>
+    <li>
+      Signing up
+      <ol type="a">
+        <li>You MUST input your full and true schedule</li>
+        <li>You MUST have a recent picture that can be used to identify yourself</li>
+        <li>Please give a true estimation of your height for your assassin to identify you</li>
+        <li>We will not allow late sign-ups</li>
+      </ol>
+    </li>
+    <li>
+      Target cannot be assassinated in class, staircases, or escalators
+      <ol type="a">
+        <li>Target can be assassinated outside of their PE class</li>
+        <li>Target can be assassinated outside of school</li>
+      </ol>
+    </li>
+    <li>A clothespin to mark the victim</li>
+    <li>
+      Safety objects will protect you from being eliminated while they are visible
+      <ol type="a">
+        <li>Safety objects will vary per day; however, they must be visible (on the person), and may not be hidden or obscured from sight</li>
+      </ol>
+    </li>
+    <li>You must send in video evidence that you have marked your target otherwise the kill will be invalidated</li>
+  </ol>
+
+  <p>
+    Failure to comply: If a player fails to follow any of the rules and guidelines listed above, they will be <strong>immediately</strong> disqualified from playing Senior Assassin.
+  </p>
+		</div>
+		<div class="flex-row">
+		<input type="checkbox" id="agree" name="agree" value="agree">
+		<label for="agree"> I agree</label></div><br>
+  	<div class="navigation-buttons">
+          <button type="button" class="prev-btn" disabled>Previous</button>
+          <button type="button" class="next-btn">Next</button>
+        </div>
+	<div class="footer-spacer" style="display:none;"></div>
+	</div>
 
       <!-- Step 1 -->
       <div class="form-step" data-step="1">
@@ -80,7 +126,7 @@
 
       <script>
         document.addEventListener('DOMContentLoaded', function() {
-          let currentStep = 1;
+          let currentStep = 0;
           const steps = document.querySelectorAll('.form-step');
           function showStep(n) {
             steps.forEach(s => s.classList.toggle('active', parseInt(s.dataset.step) === n));
@@ -88,8 +134,15 @@
           document.querySelectorAll('.next-btn').forEach(btn => {
             btn.addEventListener('click', () => {
               // Validate current step before proceeding to the next
+		// If we are on the rules step, make sure the user clicked the checkbox
+		    if (currentStep === 0) {
+			    const agreeBox = document.getElementById("agree");
+			    if (!agreeBox.checked) {
+				alert("You must agree to the rules to continue.");
+				    return;
+			    }
               // If we are on the first step, make sure the schedule is filled out for every period
-              if (currentStep === 1) {
+               }else if (currentStep === 1) {
                 let allFilled = true;
                 document.querySelectorAll('.schedule-section tbody tr').forEach(function(row) {
                   const roomInput = row.querySelector('input[type="text"]');

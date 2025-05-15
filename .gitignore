@@ -41,6 +41,7 @@ src/secrets/*
 *.swp
 .pytest_cache/
 .mypy_cache/
+node_modules/
 
 # SCSS build
 src/static/css/
