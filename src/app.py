@@ -83,7 +83,7 @@ async def signup(request: Request, profilePic: UploadFile = File(...)):
     # otherwise use the entered room number (or "None" if left blank)
     schedule_list = []
     for period in range(1, 11):
-        room = form.get(f"period{period}_room")
+        room = str(form.get(f"period{period}_room"))
         noclass = form.get(f"period{period}_noclass")
         if noclass:
             schedule_list.append("None")
@@ -120,7 +120,7 @@ async def signup(request: Request, profilePic: UploadFile = File(...)):
     # Check if the user already exists in the USERS_SHEET_ID
     user_exists = get_row(USERS_SHEET_ID, email)
     if user_exists:
-        return {"error": "User already exists."}
+        return templates.TemplateResponse("success.html", {"request": request})
     
     # Append the new user row to the USERS_SHEET_ID
     append_row(USERS_SHEET_ID, new_user_row)
