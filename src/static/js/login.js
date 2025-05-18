@@ -26,12 +26,28 @@ provider.setCustomParameters({ prompt: 'select_account' });
 setPersistence(auth, inMemoryPersistence).catch(err =>
   console.error("Persistence setup failed", err)
 );
-
 // Function to handle login and post-login logic
 async function loginAndVerify() {
+   let result;
   try {
-    // Trigger Google sign-in popup
-    const result = await signInWithPopup(auth, provider);
+    result = await signInWithPopup(auth, provider);
+  } catch (err) {
+    console.error("Firebase auth error:", err);
+    switch (err.code) {
+      case 'auth/popup-blocked':
+        alert("Popup was blocked—disable your blocker or use the redirect flow.");
+        break;
+      case 'auth/popup-closed-by-user':
+        alert("You closed the sign-in popup before completing login.");
+        break;
+      default:
+        alert("Authentication error: " + err.message);
+    }
+    return;
+  }
+	try{
+
+	  // Trigger Google sign-in popup
     const user = result.user;
     const idToken = await user.getIdToken();
 
@@ -73,7 +89,7 @@ document.getElementById("login")?.addEventListener("click", () => {
   const countdownEl = document.getElementById('countdown');
   function update() {
     // May 20, 2025 00:00 EST (UTC-4)
-    const target = new Date('2025-05-20T00:00:00-04:00');
+    const target = new Date('2025-05-27T00:00:00-04:00');
     const now = new Date();
     let diff = target - now;
     if (diff <= 0) {
