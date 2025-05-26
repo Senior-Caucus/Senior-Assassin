@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, HTTPException, Header, Response
 from ..services.firebase_auth import verify_firebase_token
-from ..services.sheets import exists, append_row, get_row, SESSIONS_SHEET_ID, USERS_SHEET_ID
+from ..services.sheets import exists, append_row, get_row, check_admin, SESSIONS_SHEET_ID, USERS_SHEET_ID
 import uuid
 import time
 
@@ -45,7 +45,7 @@ def check_session(session_id: str):
     return True
 
 @router.post("/login/verify")
-def login_verify(authorization: str = Header(...), response: Response = None):
+def login_verify(response: Response, authorization: str = Header(...)):
     """
     Endpoint to verify the Firebase ID token.
     Expects an Authorization header formatted as: "Bearer <token>".
@@ -73,7 +73,7 @@ def login_verify(authorization: str = Header(...), response: Response = None):
         max_age=3600,
         httponly=True,
         secure=True,
-        samesite="Strict"
+        samesite="strict"
     )
 
     return {"email": email, "status": "authenticated"}

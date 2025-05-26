@@ -13,16 +13,16 @@ router = APIRouter()
 def get_index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-@router.get("/login-page", response_class=HTMLResponse)
-def get_login_page(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+@router.get("/test", response_class=HTMLResponse)
+def get_new_index(request: Request):
+    return templates.TemplateResponse("new_index.html", {"request": request})
 
 @router.get("/rules", response_class=HTMLResponse)
 def get_rules_page(request: Request):
     return templates.TemplateResponse("rules.html", {"request": request})
 
-@router.get("/signup", response_class=HTMLResponse)
-def target_page(request: Request):
+@router.get("/login", response_class=HTMLResponse)
+def login(request: Request):
     verified = check_session(request.cookies.get("session_id"))
     if not verified:
         return templates.TemplateResponse("index.html", {"request": request})
@@ -38,7 +38,7 @@ def target_page(request: Request):
         else:
             return RedirectResponse(url="/success", status_code=302)
 
-    return templates.TemplateResponse("signup.html", {"request": request})
+    return templates.TemplateResponse("success.html", {"request": request})
 
 @router.get("/target", response_class=HTMLResponse)
 def target_page(request: Request):
@@ -46,13 +46,6 @@ def target_page(request: Request):
     if not verified:
         return templates.TemplateResponse("index.html", {"request": request})
     return templates.TemplateResponse("target.html", {"request": request})
-
-@router.get("/success", response_class=HTMLResponse)
-def target_page(request: Request):
-    verified = check_session(request.cookies.get("session_id"))
-    if not verified:
-        return templates.TemplateResponse("index.html", {"request": request})
-    return templates.TemplateResponse("success.html", {"request": request})
 
 @router.get("/awaiting", response_class=HTMLResponse)
 def get_awaiting_page(request: Request):

@@ -32,7 +32,7 @@ def append_row(spreadsheet_id, row: list, range="Sheet1!A:Z"):
     ).execute()
     return result
 
-def exists(spreadsheet_id, pk: str, range="Sheet1!A:Z"):
+def exists(spreadsheet_id, pk: str, range="Sheet1!A:Z") -> bool:
     result = sheets_service.spreadsheets().values().get(
         spreadsheetId=spreadsheet_id,
         range=range
