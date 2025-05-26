@@ -2,16 +2,20 @@
 
 from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import StreamingResponse, JSONResponse
-# from ..auth import get_current_admin  # or your own admin check logic
 # get the templates from config
 from ..config import templates
 from ..services.sheets import scan_sheet, edit_row, USERS_SHEET_ID, EVIDENCE_SHEET_ID
 from ..services.drive import download_video_evidence, DRIVE_ASSASSIN_EVIDENCE_FOLDER_ID
+from .auth import check_session
 
 router = APIRouter()
 
 @router.get("/dashboard")
 def admin_dashboard(request: Request):
+    session_id = request.cookies.get("session_id")
+    if not session_id or not check_session(session_id):
+        raise HTTPException(status_code=403, detail="Unauthorized access to admin dashboard.")
+
     # fetch data from Google Sheets
     user_values = scan_sheet(USERS_SHEET_ID)
     evidence_values = scan_sheet(EVIDENCE_SHEET_ID) # header: evidence_id	assassin	target	evidence_path	evidence_size	approved

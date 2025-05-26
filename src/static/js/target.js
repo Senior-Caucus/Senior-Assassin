@@ -3,7 +3,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const openBtn = document.getElementById("open-evidence");
     const closeBtn = document.querySelector(".close-btn");
     const rulesBtn = document.getElementById("rules-btn");
-    const rulesBox = document.getElementById("rules-box");
   
     // Open evidence modal
     openBtn?.addEventListener("click", () => {
@@ -17,6 +16,6 @@ document.addEventListener("DOMContentLoaded", () => {
   
     // Toggle rules box
     rulesBtn?.addEventListener("click", () => {
-      rulesBox.classList.toggle("hidden");
+      location.href = "/rules";
     });
   });

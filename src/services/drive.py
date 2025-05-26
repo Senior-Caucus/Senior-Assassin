@@ -58,7 +58,7 @@ def upload_profile_picture(email: str, filepath: str, mime_type: str) -> str:
     folder_id = _ensure_user_folder(email)
     return upload_file_to_drive("profile_pic.jpg", filepath, mime_type, parents=[folder_id])
 
-def download_profile_picture(email: str) -> str:
+def download_profile_picture(email: str) -> io.BytesIO:
     """
     Download the profile picture from the user's Drive folder.
     Returns the file ID of the downloaded picture.
@@ -72,7 +72,16 @@ def download_profile_picture(email: str) -> str:
     files = res.get('files', [])
     if not files:
         raise FileNotFoundError("Profile picture not found.")
-    return files[0]['id']
+    file_id = files[0]['id']
+
+    request = drive_service.files().get_media(fileId=file_id)
+    fh = io.BytesIO()
+    downloader = MediaIoBaseDownload(fh, request)
+    done = False
+    while not done:
+        status, done = downloader.next_chunk()
+    fh.seek(0)
+    return fh
 
 def download_video_evidence(folder: str, evidence_path: str) -> io.BytesIO:
     """
