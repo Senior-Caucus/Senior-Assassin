@@ -1,7 +1,8 @@
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload
+from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
 from google.oauth2 import service_account
 import os
+import io
 from dotenv import load_dotenv
 
 load_dotenv(dotenv_path=".env.local")
@@ -9,6 +10,7 @@ SERVICE_ACCOUNT_FILE = os.getenv("GOOGLE_SERVICE_ACCOUNT_PATH")
 SCOPES = ['https://www.googleapis.com/auth/drive.file']
 
 DRIVE_PICTURES_FOLDER_ID = "18sKMfco_KxnmN6hHJVoWcwlBL79mUjXo"
+DRIVE_ASSASSIN_EVIDENCE_FOLDER_ID = "1I0s_Xm_Cp2SlxIYsi-GyAl3Bccsl799r"
 
 credentials = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE,
@@ -71,3 +73,29 @@ def download_profile_picture(email: str) -> str:
     if not files:
         raise FileNotFoundError("Profile picture not found.")
     return files[0]['id']
+
+def download_video_evidence(folder: str, evidence_path: str) -> io.BytesIO:
+    """
+    Download video evidence from the specified folder into a BytesIO,
+    ready to stream out of a StreamingResponse.
+    """
+    query = (
+        f"name = '{evidence_path}' and mimeType != 'application/vnd.google-apps.folder' "
+        f"and '{folder}' in parents"
+    )
+    res = drive_service.files().list(
+        q=query, spaces='drive', fields='files(id)'
+    ).execute()
+    files = res.get('files', [])
+    if not files:
+        raise FileNotFoundError("Video evidence not found.")
+    file_id = files[0]['id']
+
+    request = drive_service.files().get_media(fileId=file_id)
+    fh = io.BytesIO()
+    downloader = MediaIoBaseDownload(fh, request)
+    done = False
+    while not done:
+        status, done = downloader.next_chunk()
+    fh.seek(0)
+    return fh

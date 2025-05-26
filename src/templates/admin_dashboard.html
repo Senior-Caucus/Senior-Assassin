@@ -7,12 +7,21 @@
     <div class="admin-meta">
       <h2 class="nosifer-regular">SENIOR ASSASSIN</h2>
       <div class="meta-stats">
-        <p>👥 Assassins: <strong>18</strong></p>
-        <p>💀 Eliminations: <strong>9</strong></p>
-        <p>📹 Unapproved Evidence: <strong>3</strong></p>
+        <p>👥 Assassins: <strong>{{ num_alive_users }}</strong></p>
+        <p>💀 Approved Evidence: <strong>{{num_approved_evidence}}</strong></p>
+        <p>📹 Unapproved Evidence: <strong>{{num_unapproved_evidence}}</strong></p>
+        <p>🕒 Awaiting Evidence: <strong>{{num_awaiting_evidence}}</strong></p>
       </div>
     </div>
-
+<!-- awaiting_evidence = [
+        {
+            "evidence_id": row[0],
+            "assassin": row[1],
+            "target": row[2],
+            "evidence_path": row[3]
+        }
+        for row in evidence_values[1:] if row[approved_index] == "None" or row[approved_index] == "NONE"
+    ] -->
     <div class="admin-table">
       <table>
         <thead>
@@ -23,18 +32,22 @@
           </tr>
         </thead>
         <tbody>
-          <!-- Repeat for each row -->
-          <tr>
-            <td>Alice</td>
-            <td>Bob</td>
-            <td><button class="review-btn" data-video="/static/videos/sample.mp4">Review</button></td>
+        {% for ev in awaiting_evidence %}
+          <tr id="row-{{ ev.evidence_id }}">
+            <td>{{ ev.assassin }}</td>
+            <td>{{ ev.target }}</td>
+            <td>
+              <button
+                class="review-btn"
+                data-video-url="/video_evidence/{{ ev.evidence_id }}"
+                data-id="{{ ev.evidence_id }}"
+              >
+                Review
+              </button>
+            </td>
           </tr>
-          <tr>
-            <td>Charlie</td>
-            <td>David</td>
-            <td><button class="review-btn" data-video="/static/videos/sample2.mp4">Review</button></td>
-          </tr>
-        </tbody>
+        {% endfor %}
+      </tbody>
       </table>
     </div>
   </div>
