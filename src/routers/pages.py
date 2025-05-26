@@ -1,10 +1,12 @@
 # src/routers/pages.py
 
 from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
+from fastapi.exceptions import HTTPException
 
 from ..config import templates
 from ..services.sheets import scan_sheet, get_target_info, SESSIONS_SHEET_ID, USERS_SHEET_ID
+from ..services.drive import download_profile_picture
 from ..services.logger import logger
 from .auth import check_session
 
@@ -108,6 +110,17 @@ def target_page(request: Request):
                                                         "target_picture": target_picture,
                                                         "target_height": target_height,
                                                         "target_schedule": target_schedule})
+
+@router.get("/profile_picture/{email}")
+def serve_profile_picture(email: str):
+    """
+    Streams the Drive-stored profile_pic.jpg for the given email.
+    """
+    try:
+        img_io = download_profile_picture(email)
+    except FileNotFoundError:
+        raise HTTPException(status_code=404, detail="Profile picture not found.")
+    return StreamingResponse(img_io, media_type="image/jpeg")
 
 @router.get("/awaiting", response_class=HTMLResponse)
 def get_awaiting_page(request: Request):

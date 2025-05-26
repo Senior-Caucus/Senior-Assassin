@@ -203,11 +203,6 @@ def get_target_info(user_email: str) -> List[Optional[Any]]:
                 height = f"{ft}'{inch}\""
 
     # picture
-    picture = None
-    try:
-        picture = download_profile_picture(target_email)
-    except Exception:
-        logger.error(f"Failed to download profile picture for {target_email}")
-        picture = None
+    picture = f"{target_email}/profile_pic.jpg"
 
     return [target_email, name, picture, height, schedule]

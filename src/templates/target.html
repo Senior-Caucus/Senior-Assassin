@@ -38,7 +38,7 @@
     <div class="target-image">
       <!-- picture is an io.bytesIO object -->
       {% if target_picture %}
-        <img src="data:image/jpeg;base64,{{ target_picture }}" alt="Target Picture">
+        <img src="{{ target_picture }}" alt="Target Picture">
       {% else %}
         <p>No picture available</p>
       {% endif %}
