@@ -6,46 +6,39 @@ def randomize_targets():
     if not values or len(values) < 2:
         print("Not enough users to randomize targets.")
         return
-    
-    # Remove the header row
-    header = values[0]
-    users = values[1:]
 
-    # Remove all users with role = "admin"
-    users = [user for user in users if len(user) > 1 and user[1].lower() != "admin"]
-    emails = [user[0] for user in users]
+    # Header is row 1
+    header, *all_users = values
 
-    if len(users) < 2:
-        print("Not enough users to randomize targets after removing admins.")
+    # Filter out admins
+    users = [row for row in all_users if len(row) > 1 and row[1].strip().lower() != "admin"]
+    emails = [row[0] for row in users]
+
+    if len(emails) < 2:
+        print("Not enough non-admin users to randomize targets.")
         return
-    
-    # Shuffle the emails
+
+    # Shuffle and assign
     random.shuffle(emails)
+    targets = {emails[i]: emails[(i + 1) % len(emails)] for i in range(len(emails))}
+    print("Assigning targets:", targets)
 
-    # Create a mapping of user to their target, making sure no one targets themselves
-    targets = {}
-    for i in range(len(emails)):
-        target_index = (i + 1) % len(emails)  # Ensure the last user targets the first user
-        targets[emails[i]] = emails[target_index]
-
-    # Update the Google Sheet with the new targets
-    print(targets)
-
+    # Build update requests by walking the original all_users list
     requests = []
-    i = 0
-    for value in values:
-        email = value[0]
-        if email not in targets:
-            continue
-        target = targets[email]
-        row_index = i
-        requests.append({
-            "range": f"Sheet1!C{row_index+1}",  # C is the 3rd column, +1 for 1-based index
-            "values": [[target]]
-        })
-        i += 1
-    edit_rows(USERS_SHEET_ID, requests)
-    print("Targets randomized successfully.")
+    # all_users[i] corresponds to sheet row = i+2 (because header is row 1)
+    for idx, row in enumerate(all_users, start=2):
+        email = row[0]
+        if email in targets:
+            requests.append({
+                "range": f"Sheet1!C{idx}",
+                "values": [[ targets[email] ]]
+            })
+
+    if requests:
+        edit_rows(USERS_SHEET_ID, requests)
+        print("Targets randomized successfully.")
+    else:
+        print("No matching rows to update.")
 
 if __name__ == "__main__":
     randomize_targets()
