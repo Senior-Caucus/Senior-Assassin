@@ -111,19 +111,13 @@ def target_page(request: Request):
                                                         "target_height": target_height,
                                                         "target_schedule": target_schedule})
 
-@router.get("/profile_picture/{email}")
-def serve_profile_picture(email: str):
-    """
-    Streams the Drive-stored profile_pic.jpg for the given email.
-    """
-    # Convert an %40 in the email to @
+@router.get("/profile_picture/{email}/{filename}")
+def serve_profile_picture(email: str, filename: str):
+    if filename != "profile_pic.jpg":
+        raise HTTPException(404, "Not found.")
+    # decode and download
     email = email.replace("%40", "@")
-    logger.info(f"Serving profile picture for email: {email}")
-
-    try:
-        img_io = download_profile_picture(email)
-    except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="Profile picture not found.")
+    img_io = download_profile_picture(email)
     return StreamingResponse(img_io, media_type="image/jpeg")
 
 @router.get("/awaiting", response_class=HTMLResponse)
