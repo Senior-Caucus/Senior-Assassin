@@ -32,12 +32,18 @@ def randomize_targets():
     print(targets)
 
     requests = []
-    for user, target in targets.items():
-        row_index = users.index([u for u in users if u[0] == user][0]) + 1  # +1 for header
+    i = 0
+    for value in values:
+        email = value[0]
+        if email not in targets:
+            continue
+        target = targets[email]
+        row_index = i
         requests.append({
             "range": f"Sheet1!C{row_index+1}",  # C is the 3rd column, +1 for 1-based index
             "values": [[target]]
         })
+        i += 1
     edit_rows(USERS_SHEET_ID, requests)
     print("Targets randomized successfully.")
 
