@@ -33,22 +33,10 @@ def randomize_targets():
 
     requests = []
     for user, target in targets.items():
+        row_index = users.index([u for u in users if u[0] == user][0]) + 1  # +1 for header
         requests.append({
-            "updateCells": {
-                "range": {
-                    "sheetId": 0,  # the first sheet
-                    "startRowIndex": users.index([u for u in users if u[0] == user][0]) + 1,
-                    "endRowIndex": users.index([u for u in users if u[0] == user][0]) + 2,
-                    "startColumnIndex": 2,  # target is in the third column
-                    "endColumnIndex": 3
-                },
-                "rows": [{
-                    "values": [{
-                        "userEnteredValue": {"stringValue": target}
-                    }]
-                }],
-                "fields": "userEnteredValue"
-            }
+            "range": f"Sheet1!C{row_index+1}",  # C is the 3rd column, +1 for 1-based index
+            "values": [[target]]
         })
     edit_rows(USERS_SHEET_ID, requests)
     print("Targets randomized successfully.")
