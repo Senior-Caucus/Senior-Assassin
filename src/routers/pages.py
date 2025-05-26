@@ -116,6 +116,10 @@ def serve_profile_picture(email: str):
     """
     Streams the Drive-stored profile_pic.jpg for the given email.
     """
+    # Convert an %40 in the email to @
+    email = email.replace("%40", "@")
+    logger.info(f"Serving profile picture for email: {email}")
+
     try:
         img_io = download_profile_picture(email)
     except FileNotFoundError:
