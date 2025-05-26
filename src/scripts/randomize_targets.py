@@ -21,7 +21,7 @@ def randomize_targets():
     
     # Shuffle the emails
     random.shuffle(emails)
-    emails.remove('ojaffe50@stuy.edu')
+    #emails.remove('ojaffe50@stuy.edu')
 
     # Create a mapping of user to their target, making sure no one targets themselves
     targets = {}
@@ -36,7 +36,7 @@ def randomize_targets():
         email = user[0]
         target_email = targets[email]
         if target_email:
-            success = edit_row(USERS_SHEET_ID, email, "target", target_email)
+            success = edit_row(USERS_SHEET_ID, email, "currentTarget", target_email)
             if not success:
                 print(f"Failed to update target for {email} to {target_email}")
             else:
