@@ -17,11 +17,11 @@ def admin_dashboard(request: Request):
     evidence_values = scan_sheet(EVIDENCE_SHEET_ID) # header: evidence_id	assassin	target	evidence_path	evidence_size	approved
 
     # Get number of alive users
-    alive_index = user_values[0].index("Alive")
+    alive_index = user_values[0].index("alive")
     num_alive_users = sum(1 for row in user_values[1:] if row[alive_index] == "True" or row[alive_index] == "TRUE")
 
     # Get the number of approved evidence
-    approved_index = evidence_values[0].index("Approved")
+    approved_index = evidence_values[0].index("approved")
     num_approved_evidence = sum(1 for row in evidence_values[1:] if row[approved_index] == "True" or row[approved_index] == "TRUE")
     num_unapproved_evidence = sum(1 for row in evidence_values[1:] if row[approved_index] == "False" or row[approved_index] == "FALSE")
     num_awaiting_evidence = sum(1 for row in evidence_values[1:] if row[approved_index] == "None" or row[approved_index] == "NONE")
