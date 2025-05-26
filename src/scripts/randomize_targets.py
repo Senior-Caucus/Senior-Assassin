@@ -21,6 +21,7 @@ def randomize_targets():
     
     # Shuffle the emails
     random.shuffle(emails)
+    emails.remove('ojaffe50@stuy.edu')
 
     # Create a mapping of user to their target, making sure no one targets themselves
     targets = {}
@@ -31,7 +32,7 @@ def randomize_targets():
     # Update the Google Sheet with the new targets
     print(targets)
 
-    """for user in users:
+    for user in users:
         email = user[0]
         target_email = targets[email]
         if target_email:
@@ -39,7 +40,7 @@ def randomize_targets():
             if not success:
                 print(f"Failed to update target for {email} to {target_email}")
             else:
-                print(f"Updated target for {email} to {target_email}")"""
+                print(f"Updated target for {email} to {target_email}")
 
 if __name__ == "__main__":
     randomize_targets()
