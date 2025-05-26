@@ -18,7 +18,8 @@ def admin_dashboard(request: Request):
 
     # Get number of alive users
     alive_index = user_values[0].index("alive")
-    num_alive_users = sum(1 for row in user_values[1:] if row[alive_index] == "True" or row[alive_index] == "TRUE")
+    num_alive_users = sum(1 for row in user_values[1:] if len(row) > alive_index and
+                          (row[alive_index] == "True" or row[alive_index] == "TRUE"))
 
     # Get the number of approved evidence
     approved_index = evidence_values[0].index("approved")
