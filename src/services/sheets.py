@@ -103,6 +103,23 @@ def edit_row(spreadsheet_id, pk: str, attribute: str, value: str, range="Sheet1!
     
     return True
 
+def edit_rows(spreadsheet_id, requests, range="Sheet1!A:Z"):
+    """
+    Edit multiple rows in a Google Sheet using batch update requests.
+    Each request should be a dictionary with the necessary parameters.
+    """
+    body = {
+        'valueInputOption': 'RAW',
+        'data': requests
+    }
+    
+    result = sheets_service.spreadsheets().values().batchUpdate(
+        spreadsheetId=spreadsheet_id,
+        body=body
+    ).execute()
+    
+    return result
+
 def scan_sheet(spreadsheet_id, range="Sheet1!A:Z"):
     result = sheets_service.spreadsheets().values().get(
         spreadsheetId=spreadsheet_id,

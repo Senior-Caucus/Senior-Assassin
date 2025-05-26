@@ -1,4 +1,4 @@
-from ..services.sheets import scan_sheet, edit_row, USERS_SHEET_ID
+from ..services.sheets import scan_sheet, edit_rows, USERS_SHEET_ID
 import random
 
 def randomize_targets():
@@ -21,7 +21,6 @@ def randomize_targets():
     
     # Shuffle the emails
     random.shuffle(emails)
-    #emails.remove('ojaffe50@stuy.edu')
 
     # Create a mapping of user to their target, making sure no one targets themselves
     targets = {}
@@ -32,15 +31,27 @@ def randomize_targets():
     # Update the Google Sheet with the new targets
     print(targets)
 
-    for user in users:
-        email = user[0]
-        target_email = targets[email]
-        if target_email:
-            success = edit_row(USERS_SHEET_ID, email, "currentTarget", target_email)
-            if not success:
-                print(f"Failed to update target for {email} to {target_email}")
-            else:
-                print(f"Updated target for {email} to {target_email}")
+    requests = []
+    for user, target in targets.items():
+        requests.append({
+            "updateCells": {
+                "range": {
+                    "sheetId": 0,  # the first sheet
+                    "startRowIndex": users.index([u for u in users if u[0] == user][0]) + 1,
+                    "endRowIndex": users.index([u for u in users if u[0] == user][0]) + 2,
+                    "startColumnIndex": 2,  # target is in the third column
+                    "endColumnIndex": 3
+                },
+                "rows": [{
+                    "values": [{
+                        "userEnteredValue": {"stringValue": target}
+                    }]
+                }],
+                "fields": "userEnteredValue"
+            }
+        })
+    edit_rows(USERS_SHEET_ID, requests)
+    print("Targets randomized successfully.")
 
 if __name__ == "__main__":
     randomize_targets()
