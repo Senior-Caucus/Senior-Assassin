@@ -1,5 +1,5 @@
 from googleapiclient.discovery import build
-from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload
+from googleapiclient.http import MediaFileUpload, MediaIoBaseDownload, MediaIoBaseUpload
 from google.oauth2 import service_account
 import os
 import io
@@ -108,3 +108,28 @@ def download_video_evidence(folder: str, evidence_path: str) -> io.BytesIO:
         status, done = downloader.next_chunk()
     fh.seek(0)
     return fh
+
+def upload_video_evidence(
+    folder_id: str,
+    file_name: str,
+    file_bytes: bytes,
+    mime_type: str = 'video/mp4'
+) -> str:
+    """
+    Upload raw video bytes to the given Drive folder.
+    Returns the new file's Drive ID.
+    """
+    # Wrap the bytes so Drive can stream them
+    fh = io.BytesIO(file_bytes)
+    media = MediaIoBaseUpload(fh, mimetype=mime_type)
+
+    metadata = {
+        'name': file_name,
+        'parents': [folder_id],
+    }
+    created = drive_service.files().create(
+        body=metadata,
+        media_body=media,
+        fields='id'
+    ).execute()
+    return created.get('id')

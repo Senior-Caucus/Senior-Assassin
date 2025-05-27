@@ -105,6 +105,7 @@ def target_page(request: Request):
     target_email, target_name, target_picture, target_height, target_schedule = target_info
 
     return templates.TemplateResponse("target.html", {"request": request,
+                                                        "user_email": user_email,
                                                         "target_email": target_email,
                                                         "target_name": target_name,
                                                         "target_picture": target_picture,

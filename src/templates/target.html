@@ -2,13 +2,6 @@
 
 {% block title %}Target{% endblock %}
 
-<!--     return templates.TemplateResponse("target.html", {"request": request,
-                                                        "target_email": target_email,
-                                                        "target_name": target_name,
-                                                        "target_picture": target_picture,
-                                                        "target_height": target_height,
-                                                        "target_schedule": target_schedule}) -->
-
 {% block content %}
   <div class="target-page">
     <h2 class="nosifer-regular">TARGET: {{ target_name }}</h2>
@@ -51,20 +44,27 @@
       <div class="modal-content">
         <button class="close-btn">&times;</button>
         <h3>Submit Evidence</h3>
-        <form action="/submit-evidence" method="post" enctype="multipart/form-data">
+        <form id="evidence-form" method="post" enctype="multipart/form-data">
           <label for="video">Video Evidence (max 25MB):</label>
           <input type="file" name="video" id="video" accept="video/*" required>
 
           <label for="comments">Comments:</label>
           <textarea name="comments" id="comments" rows="4" placeholder="Optional..."></textarea>
-
+          <!-- Hidden field with the target's email -->
+          <input type="hidden" name="target_email" value="{{ target_email }}">
+          <input type="hidden" name="user_email" value="{{ user_email }}">
+          <!-- Progress UI -->
+          <div id="progress-container" class="hidden">
+            <div id="upload-progress"></div>
+          </div>
+          <p id="upload-msg" class="upload-msg"></p>
           <button type="submit" class="submit-btn">Submit</button>
         </form>
       </div>
     </div>
 
     <!-- Rules Toggle -->
-    <button id="rules-btn">Rules</button>
+    <button id="rules-btn">Instructions/Rules</button>
   </div>
 {% endblock %}
 
