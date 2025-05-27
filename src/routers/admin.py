@@ -37,7 +37,8 @@ def admin_dashboard(request: Request):
             "evidence_id": row[0],
             "assassin": row[1],
             "target": row[2],
-            "evidence_path": row[3]
+            "evidence_path": row[3],
+            "extension": row[7]
         }
         for row in evidence_values[1:] if row[approved_index] == "None" or row[approved_index] == "NONE"
     ]
@@ -55,7 +56,7 @@ def get_video_evidence(evidence_id: str):
     try:
         video_io = download_video_evidence(
             DRIVE_ASSASSIN_EVIDENCE_FOLDER_ID,
-            f"{evidence_id}.mp4"
+            evidence_id
         )
     except FileNotFoundError:
         raise HTTPException(status_code=404, detail="Evidence not found.")

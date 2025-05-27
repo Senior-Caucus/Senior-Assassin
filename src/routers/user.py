@@ -30,23 +30,25 @@ async def submit_evidence(
 
     # 3) upload to Drive (naming folder “assassin-target”)
     extension = "mp4" if not video.filename else video.filename.split('.')[-1]
-    drive_path = f"{user_email}-{target_email}/evidence.{extension}"
-    file_id = upload_video_evidence(
+    evidence_uuid = str(uuid.uuid4())
+    drive_path = evidence_uuid + "." + extension
+    _ = upload_video_evidence(
         DRIVE_ASSASSIN_EVIDENCE_FOLDER_ID,
-        drive_path,
+        evidence_uuid,
         data,
         video.content_type or "video/mp4"
     )
 
     # 4) log in your evidence sheet
     new_row = [
-        file_id,           # evidence_id
+        evidence_uuid,           # evidence_id
         user_email,    # assassin
         target_email,      # target
         drive_path,        # evidence_path
         str(size),         # evidence_size
         "None",            # approved
-        comments           # comments
+        comments,          # comments
+        extension          # extension
     ]
     append_row(EVIDENCE_SHEET_ID, new_row)
 
