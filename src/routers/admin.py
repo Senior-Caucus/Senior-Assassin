@@ -39,7 +39,7 @@ def admin_dashboard(request: Request):
             "assassin": row[1],
             "target": row[2],
             "evidence_path": row[3],
-            "full_evidence_path": row[0] + row[7]
+            "full_evidence_path": row[0] + "." + row[7]
         }
         for row in evidence_values[1:] if row[approved_index] == "None" or row[approved_index] == "NONE"
     ]
