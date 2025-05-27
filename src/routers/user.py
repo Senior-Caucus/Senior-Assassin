@@ -2,7 +2,7 @@
 # router: /user/endpoint
 
 from fastapi import APIRouter, HTTPException, Form, UploadFile, File, Request
-from fastapi.responses import RedirectResponse
+from fastapi.responses import JSONResponse
 from ..services.drive import upload_video_evidence, DRIVE_ASSASSIN_EVIDENCE_FOLDER_ID
 from ..services.sheets import append_row, EVIDENCE_SHEET_ID, edit_row, USERS_SHEET_ID
 import uuid
@@ -53,5 +53,8 @@ async def submit_evidence(
     # 5) Edit the current user's row in the USERS_SHEET_ID to set waiting to True
     edit_row(USERS_SHEET_ID, user_email, "waiting", "True")
 
-    # 6) return a redirect to /target through /login (will actually go to the awaiting endpoint)
-    return RedirectResponse(url=f"/login", status_code=302)
+    # 6) return a redirect to /login
+    return JSONResponse({
+        "message": "Evidence submitted. Awaiting approval.",
+        "redirect": "/login"
+    })

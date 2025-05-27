@@ -53,7 +53,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const pct = Math.round((evt.loaded / evt.total) * 100);
         progressBar.style.width = pct + "%";
         uploadMsg.textContent = pct + "% uploaded…";
-        uploadMsg.style.color = "#000";
+        uploadMsg.style.color = "#FFF";
       }
     });
 
@@ -70,6 +70,11 @@ document.addEventListener("DOMContentLoaded", () => {
           form.reset();
           document.getElementById("evidence-modal").classList.add("hidden");
         }, 250);
+        const res = JSON.parse(xhr.responseText);
+        if (res.redirect) {
+          window.location.href = res.redirect;
+          return;
+        }
       } else {
         uploadMsg.textContent = "Error: " + xhr.responseText;
         uploadMsg.style.color = "red";
