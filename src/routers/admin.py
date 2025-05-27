@@ -99,6 +99,7 @@ def approve_evidence(evidence_id: str, approved: bool):
     if not evidence_id:
         raise HTTPException(status_code=400, detail="Evidence ID is required.")
 
+    # Edit the evidence row in the EVIDENCE_SHEET_ID to set approved status
     success = edit_row(
         EVIDENCE_SHEET_ID,
         evidence_id,
@@ -106,6 +107,24 @@ def approve_evidence(evidence_id: str, approved: bool):
         str(approved),
         range="Sheet1!A:Z"
     )
-    if not success:
-        raise HTTPException(status_code=404, detail="Evidence ID not found.")
+    
+    # Let's get some additional information about the evidence
+    row = get_row(EVIDENCE_SHEET_ID, evidence_id)
+    user_email = str(row[1] if row is not None and len(row) > 1 else None)
+    target_email = str(row[2] if row is not None and len(row) > 2 else None)
+
+    if approved:
+        # Edit the target's row in the USERS_SHEET_ID to set alive to False
+        edit_row(USERS_SHEET_ID, target_email, "alive", "False", range="Sheet1!A:Z")
+        # Find the target's target
+        target_row = get_row(USERS_SHEET_ID, target_email)
+        target_target_email = str(target_row[2] if target_row is not None and len(target_row) > 2 else None)
+        # Give the assassin the target's target
+        edit_row(USERS_SHEET_ID, user_email, "target", target_target_email, range="Sheet1!A:Z")
+        # Set awaiting to False for the assassin
+        edit_row(USERS_SHEET_ID, user_email, "waiting", "False", range="Sheet1!A:Z")
+    else:
+        # If not approved, we can just set the waiting flag to False
+        edit_row(USERS_SHEET_ID, user_email, "waiting", "False", range="Sheet1!A:Z")
+
     return JSONResponse({"message": "OK"})

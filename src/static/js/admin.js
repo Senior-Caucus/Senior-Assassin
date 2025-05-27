@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Approve / Deny handler
   function sendDecision(approved) {
     if (!currentId) return;
-    fetch(`/approve-evidence/${currentId}/${approved}`, {
+    fetch(`/admin/approve-evidence/${currentId}/${approved}`, {
       method: "POST"
     })
     .then(res => {

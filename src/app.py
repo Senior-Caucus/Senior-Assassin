@@ -99,13 +99,13 @@ async def signup(request: Request, profilePic: UploadFile = File(...)):
         return {"error": "Height not provided."}
 
     # Construct the new user row using the header:
-    # email, role, currentTarget, eliminationHistory, createdAt, fullName, waiting, picturePath, schedule
+    # email, role, currentTarget, assassinationStatus, createdAt, fullName, waiting, picturePath, schedule
     import time
     new_user_row = [
         email,            # email from the session
         "user",         # default role is user
         "None",         # currentTarget
-        "None",         # eliminationHistory
+        "None",         # assassinationStatus
         str(round(time.time())), # createdAt
         full_name,        # fullName
         "False",        # waiting (not waiting for anything upon signup)
