@@ -34,7 +34,7 @@ async def submit_evidence(
     drive_path = evidence_uuid + "." + extension
     _ = upload_video_evidence(
         DRIVE_ASSASSIN_EVIDENCE_FOLDER_ID,
-        evidence_uuid,
+        drive_path,
         data,
         video.content_type or "video/mp4"
     )
