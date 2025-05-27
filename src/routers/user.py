@@ -6,6 +6,7 @@ from fastapi.responses import JSONResponse
 from ..services.drive import upload_video_evidence, DRIVE_ASSASSIN_EVIDENCE_FOLDER_ID
 from ..services.sheets import append_row, EVIDENCE_SHEET_ID, edit_row, USERS_SHEET_ID
 import uuid
+import time
 
 router = APIRouter()
 
@@ -48,7 +49,8 @@ async def submit_evidence(
         str(size),         # evidence_size
         "None",            # approved
         comments,          # comments
-        extension          # extension
+        extension,         # extension
+        str(int(time.time())),  # timestamp
     ]
     append_row(EVIDENCE_SHEET_ID, new_row)
 
