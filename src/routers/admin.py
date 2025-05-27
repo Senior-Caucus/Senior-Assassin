@@ -14,7 +14,7 @@ router = APIRouter()
 def admin_dashboard(request: Request):
     session_id = str(request.cookies.get("session_id"))
     row = get_row(SESSIONS_SHEET_ID, session_id)
-    if not row or len(row) < 5 or row[4] != "True":
+    if not row or len(row) < 5 or (row[4] != "TRUE" and row[4] != "True"):
         raise HTTPException(status_code=403, detail="You are not authorized to access this page.")
 
     # fetch data from Google Sheets
