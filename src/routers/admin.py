@@ -1,12 +1,13 @@
 # src/routers/admin.py
 
 from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.responses import StreamingResponse, JSONResponse
+from fastapi.responses import Response, JSONResponse
 # get the templates from config
 from ..config import templates
 from ..services.sheets import scan_sheet, edit_row, USERS_SHEET_ID, EVIDENCE_SHEET_ID
 from ..services.drive import download_video_evidence, DRIVE_ASSASSIN_EVIDENCE_FOLDER_ID
 from .auth import get_row, SESSIONS_SHEET_ID
+import re
 
 router = APIRouter()
 
@@ -53,16 +54,45 @@ def admin_dashboard(request: Request):
                                        "awaiting_evidence": awaiting_evidence})
 
 @router.get("/video_evidence/{evidence_id}")
-def get_video_evidence(evidence_id: str):
+def get_video_evidence(request: Request, evidence_id: str):
+    # 1) download entire file into BytesIO
     try:
         video_io = download_video_evidence(
             DRIVE_ASSASSIN_EVIDENCE_FOLDER_ID,
             evidence_id
         )
     except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="Evidence not found.")
-    return StreamingResponse(video_io, media_type="video/mp4")
+        raise HTTPException(404, "Evidence not found.")
 
+    data = video_io.getvalue()
+    total = len(data)
+
+    # 2) check for Range header
+    range_header = request.headers.get("range")
+    if range_header:
+        # e.g. "bytes=123-"
+        m = re.match(r"bytes=(\d+)-(\d*)", range_header)
+        if m:
+            start = int(m.group(1))
+            end = int(m.group(2)) if m.group(2) else total - 1
+            if end >= total:
+                end = total - 1
+            chunk = data[start : end + 1]
+            headers = {
+                "Content-Range": f"bytes {start}-{end}/{total}",
+                "Accept-Ranges": "bytes",
+                "Content-Length": str(len(chunk)),
+                "Content-Type": "video/mp4",
+            }
+            return Response(content=chunk, status_code=206, headers=headers)
+        # if malformed, fall through to full download
+
+    # 3) no Range → send full
+    headers = {
+        "Accept-Ranges": "bytes",
+        "Content-Length": str(total),
+    }
+    return Response(content=data, media_type="video/mp4", headers=headers)
 
 @router.post("/approve-evidence/{evidence_id}/{approved}")
 def approve_evidence(evidence_id: str, approved: bool):
