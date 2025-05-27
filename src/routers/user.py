@@ -53,5 +53,5 @@ async def submit_evidence(
     # 5) Edit the current user's row in the USERS_SHEET_ID to set waiting to True
     edit_row(USERS_SHEET_ID, user_email, "waiting", "True")
 
-    # 6) return a redirect to /target
-    return RedirectResponse(url=f"/target", status_code=302)
+    # 6) return a redirect to /target through /login (will actually go to the awaiting endpoint)
+    return RedirectResponse(url=f"/login", status_code=302)

@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const rulesBtn = document.getElementById("rules-btn");
 
   const form = document.getElementById("evidence-form");
-  const videoInput = document.getElementById("video");
+  const fileInput = document.getElementById("video");
   const progressContainer = document.getElementById("progress-container");
   const progressBar = document.getElementById("upload-progress");
   const uploadMsg = document.getElementById("upload-msg");
@@ -23,17 +23,20 @@ document.addEventListener("DOMContentLoaded", () => {
     uploadMsg.textContent = "";
   }
 
-  // --- form submit with progress ---
-  form?.addEventListener("submit", (e) => {
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
+    uploadMsg.textContent = "";
 
-    const file = videoInput.files[0];
-    if (!file) return;
+    const file = fileInput.files[0];
+    if (!file) {
+      uploadMsg.textContent = "Please select a file.";
+      uploadMsg.style.color = "red";
+      return;
+    }
 
-    // 25 MB size limit
-    const maxBytes = 25 * 1024 * 1024;
-    if (file.size > maxBytes) {
-      uploadMsg.textContent = "File too large (max 25 MB).";
+    const MAX = 25 * 1024 * 1024; // 25 MB
+    if (file.size > MAX) {
+      uploadMsg.textContent = "File too large (max 25 MB).";
       uploadMsg.style.color = "red";
       return;
     }
@@ -42,22 +45,33 @@ document.addEventListener("DOMContentLoaded", () => {
     const xhr = new XMLHttpRequest();
     xhr.open("POST", "/user/submit-evidence", true);
 
-    // progress
-    progressContainer.classList.remove("hidden");
-    xhr.upload.onprogress = (evt) => {
+    // show the bar
+    progressContainer.style.display = "block";
+
+    xhr.upload.addEventListener("progress", (evt) => {
       if (evt.lengthComputable) {
-        const pct = (evt.loaded / evt.total) * 100;
+        const pct = Math.round((evt.loaded / evt.total) * 100);
         progressBar.style.width = pct + "%";
+        uploadMsg.textContent = pct + "% uploaded…";
+        uploadMsg.style.color = "#000";
       }
-    };
+    });
 
     xhr.onload = () => {
       if (xhr.status === 200) {
+        progressBar.style.width = "100%";
         uploadMsg.textContent = "Upload complete!";
-        uploadMsg.style.color = "lime";
-        setTimeout(closeModal, 1500);
+        uploadMsg.style.color = "green";
+        setTimeout(() => {
+          // reset UI
+          progressContainer.style.display = "none";
+          progressBar.style.width = "0%";
+          uploadMsg.textContent = "";
+          form.reset();
+          document.getElementById("evidence-modal").classList.add("hidden");
+        }, 250);
       } else {
-        uploadMsg.textContent = "Error uploading evidence.";
+        uploadMsg.textContent = "Error: " + xhr.responseText;
         uploadMsg.style.color = "red";
       }
     };
