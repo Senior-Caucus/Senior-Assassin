@@ -9,7 +9,7 @@
       <div class="meta-stats">
         <p>👥 Assassins: <strong>{{ num_alive_users }}</strong></p>
         <p>💀 Approved Evidence: <strong>{{num_approved_evidence}}</strong></p>
-        <p>📹 Unapproved Evidence: <strong>{{num_unapproved_evidence}}</strong></p>
+        <p>📹 Denied Evidence: <strong>{{num_unapproved_evidence}}</strong></p>
         <p>🕒 Awaiting Evidence: <strong>{{num_awaiting_evidence}}</strong></p>
       </div>
     </div>
@@ -39,7 +39,7 @@
             <td>
               <button
                 class="review-btn"
-                data-video-url="/video_evidence/{{ ev.evidence_id }}"
+                data-video-url="/admin/video_evidence/{{ ev.evidence_id }}"
                 data-id="{{ ev.evidence_id }}"
               >
                 Review
