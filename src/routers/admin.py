@@ -6,15 +6,16 @@ from fastapi.responses import StreamingResponse, JSONResponse
 from ..config import templates
 from ..services.sheets import scan_sheet, edit_row, USERS_SHEET_ID, EVIDENCE_SHEET_ID
 from ..services.drive import download_video_evidence, DRIVE_ASSASSIN_EVIDENCE_FOLDER_ID
-from .auth import check_session
+from .auth import get_row, SESSIONS_SHEET_ID
 
 router = APIRouter()
 
 @router.get("/dashboard")
 def admin_dashboard(request: Request):
-    session_id = request.cookies.get("session_id")
-    if not session_id or not check_session(session_id):
-        raise HTTPException(status_code=403, detail="Unauthorized access to admin dashboard.")
+    session_id = str(request.cookies.get("session_id"))
+    row = get_row(SESSIONS_SHEET_ID, session_id)
+    if not row or len(row) < 5 or row[4] != "True":
+        raise HTTPException(status_code=403, detail="You are not authorized to access this page.")
 
     # fetch data from Google Sheets
     user_values = scan_sheet(USERS_SHEET_ID)
