@@ -120,7 +120,7 @@ def approve_evidence(evidence_id: str, approved: bool):
         target_row = get_row(USERS_SHEET_ID, target_email)
         target_target_email = str(target_row[2] if target_row is not None and len(target_row) > 2 else None)
         # Give the assassin the target's target
-        edit_row(USERS_SHEET_ID, user_email, "target", target_target_email, range="Sheet1!A:Z")
+        edit_row(USERS_SHEET_ID, user_email, "currentTarget", target_target_email, range="Sheet1!A:Z")
         # Set awaiting to False for the assassin
         edit_row(USERS_SHEET_ID, user_email, "waiting", "False", range="Sheet1!A:Z")
     else:
