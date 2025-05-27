@@ -1,10 +1,10 @@
 # src/routers/user.py
 # router: /user/endpoint
 
-from fastapi import APIRouter, Depends, HTTPException, Form, UploadFile, File, Request
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter, HTTPException, Form, UploadFile, File, Request
+from fastapi.responses import RedirectResponse
 from ..services.drive import upload_video_evidence, DRIVE_ASSASSIN_EVIDENCE_FOLDER_ID
-from ..services.sheets import append_row, EVIDENCE_SHEET_ID
+from ..services.sheets import append_row, EVIDENCE_SHEET_ID, edit_row, USERS_SHEET_ID
 import uuid
 
 router = APIRouter()
@@ -29,10 +29,11 @@ async def submit_evidence(
         raise HTTPException(400, "File too large (max 25 MB)")
 
     # 3) upload to Drive (naming folder “assassin-target”)
-    drive_path = f"{user_email}-{target_email}/{video.filename}"
+    extension = "mp4" if not video.filename else video.filename.split('.')[-1]
+    drive_path = f"{user_email}-{target_email}/evidence.{extension}"
     file_id = upload_video_evidence(
         DRIVE_ASSASSIN_EVIDENCE_FOLDER_ID,
-        "evidence",
+        drive_path,
         data,
         video.content_type or "video/mp4"
     )
@@ -49,5 +50,8 @@ async def submit_evidence(
     ]
     append_row(EVIDENCE_SHEET_ID, new_row)
 
-    # 5) return a JSON confirmation
-    return JSONResponse({"message": "Evidence submitted. Awaiting approval."})
+    # 5) Edit the current user's row in the USERS_SHEET_ID to set waiting to True
+    edit_row(USERS_SHEET_ID, user_email, "waiting", "True")
+
+    # 6) return a redirect to /target
+    return RedirectResponse(url=f"/target", status_code=302)
