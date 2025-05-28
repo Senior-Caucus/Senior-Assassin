@@ -16,11 +16,11 @@ router = APIRouter()
 
 @router.get("/index", response_class=HTMLResponse)
 def get_index(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    return templates.TemplateResponse("new_index.html", {"request": request})
 
 @router.get("/test", response_class=HTMLResponse)
 def get_new_index(request: Request):
-    return templates.TemplateResponse("new_index.html", {"request": request})
+    return RedirectResponse(url="/index", status_code=302)
 
 @router.get("/rules", response_class=HTMLResponse)
 def get_rules_page(request: Request):
