@@ -19,6 +19,19 @@ credentials = service_account.Credentials.from_service_account_file(
 
 drive_service = build('drive', 'v3', credentials=credentials)
 
+def file_exists(folder_id: str, file_name: str) -> bool:
+    """
+    Check if a file with the given name exists in the specified folder.
+    Returns True if it exists, False otherwise.
+    """
+    query = (
+        f"name = '{file_name}' and mimeType != 'application/vnd.google-apps.folder' "
+        f"and '{folder_id}' in parents"
+    )
+    res = drive_service.files().list(q=query, spaces='drive', fields='files(id)').execute()
+    files = res.get('files', [])
+    return len(files) > 0
+
 def upload_file_to_drive(name, filepath, mime_type, parents=None):
     file_metadata = {'name': name}
     if parents:
