@@ -109,6 +109,7 @@ def target_page(request: Request):
     safety_rows = scan_sheet(SAFETY_OBJECT_SHEET_ID) or [] # Date (MM_DD_YYYY)	Object	Hint
     # Get today's date in MM_DD_YYYY format
     today = datetime.now().strftime("%m_%d_%Y")
+    logger.info(f"Today's date: {today}")
     today_safety = str(None)
     tmr_hint = str(None)
     for i in range(1, len(safety_rows)):
@@ -117,8 +118,8 @@ def target_page(request: Request):
             continue
         date_str, obj, hint = row[0], row[1], row[2]
         if date_str == today:
-            today_safety = obj
-            tmr_hint = safety_rows[i + 1][2] if i + 1 < len(safety_rows) else str(None)
+            today_safety = safety_rows[i + 1][1] if i + 1 < len(safety_rows) else str(None)
+            tmr_hint = safety_rows[i + 2][2] if i + 2 < len(safety_rows) else str(None)
 
     return templates.TemplateResponse("target.html", {"request": request,
                                                         "user_email": user_email,
