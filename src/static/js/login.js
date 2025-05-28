@@ -82,5 +82,11 @@ async function loginAndVerify() {
 // Attach login function to button
 document.getElementById("login")?.addEventListener("click", () => {
   localStorage.setItem("postLoginRedirect", "/login");
+  // disable the button to prevent multiple clicks
+  const loginButton = document.getElementById("login");
+  if (loginButton) {
+    loginButton.disabled = true;
+    loginButton.textContent = "Logging in...";
+  }
   loginAndVerify();
 });
