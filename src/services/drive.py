@@ -19,18 +19,36 @@ credentials = service_account.Credentials.from_service_account_file(
 
 drive_service = build('drive', 'v3', credentials=credentials)
 
-def file_exists(folder_id: str, file_name: str) -> bool:
-    """
-    Check if a file with the given name exists in the specified folder.
-    Returns True if it exists, False otherwise.
-    """
+def _get_user_folder_id(email: str) -> str:
+    """Return the Drive folder ID for this user (assumes it already exists)."""
     query = (
-        f"name = '{file_name}' and mimeType != 'application/vnd.google-apps.folder' "
-        f"and '{folder_id}' in parents"
+        f"name = '{email}' and mimeType = 'application/vnd.google-apps.folder' "
+        f"and '{DRIVE_PICTURES_FOLDER_ID}' in parents"
     )
     res = drive_service.files().list(q=query, spaces='drive', fields='files(id)').execute()
     files = res.get('files', [])
-    return len(files) > 0
+    if not files:
+        raise FileNotFoundError(f"No folder found for user {email}")
+    return files[0]['id']
+
+
+def pfp_exists(email: str) -> bool:
+    """
+    Check if the user has uploaded profile_pic.jpg in their Drive folder.
+    Returns True if it exists, False otherwise.
+    """
+    try:
+        folder_id = _get_user_folder_id(email)
+    except FileNotFoundError:
+        return False
+
+    query = (
+        "name = 'profile_pic.jpg' and "
+        "mimeType != 'application/vnd.google-apps.folder' and "
+        f"'{folder_id}' in parents"
+    )
+    res = drive_service.files().list(q=query, spaces='drive', fields='files(id)').execute()
+    return bool(res.get('files'))
 
 def upload_file_to_drive(name, filepath, mime_type, parents=None):
     file_metadata = {'name': name}
