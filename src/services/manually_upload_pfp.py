@@ -1,6 +1,6 @@
 from .drive import upload_profile_picture
 
-email = "ema50@stuy.edu"
+email = "elee51@stuy.edu"
 filepath = "/home/seahorse/Senior-Assassin/src/services/profile_pic.jpg"
 
 def upload_user_profile_picture(email: str, filepath: str):

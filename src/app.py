@@ -134,3 +134,8 @@ async def signup(request: Request, profilePic: UploadFile = File(...)):
     os.remove(temp_path)
 
     return RedirectResponse(url="/success", status_code=303)
+
+
+
+
+
