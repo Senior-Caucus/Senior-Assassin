@@ -38,9 +38,11 @@
     </div>
 
     <div class="target-safety">
-      <p>Today's safety object: {{ today_safety }}</p>
-      <p>Hint for tomorrow's object: {{ tmr_hint }}</p>
+      <p><b>Current Safety Object:</b> {{ today_safety }}</p>
+      <p><b>Next Safety Object:</b> {{ tmr_hint }}</p>
     </div>
+
+    <button id="rules-btn">Instructions/Rules</button>
 
     <button id="open-evidence" class="action-btn">Submit Evidence</button>
 
@@ -67,9 +69,6 @@
         </form>
       </div>
     </div>
-
-    <!-- Rules Toggle -->
-    <button id="rules-btn">Instructions/Rules</button>
   </div>
   <div class="footer-spacer" style="display:none;"></div>
 {% endblock %}
