@@ -84,11 +84,18 @@ def login(request: Request):
 def target_page(request: Request):
     # 1. Get session_id cookie
     session_id = request.cookies.get("session_id")
-    if not session_id or not check_session(session_id):
+    session_rows = scan_sheet(SESSIONS_SHEET_ID) or []
+    session_valid = False
+
+    for row in session_rows[1:]:
+        if row and row[0] == session_id:
+            session_valid = True
+            break
+
+    if not session_id or not session_valid:
         return templates.TemplateResponse("test.html", {"request": request})
     
     # 2. Get user email from session
-    session_rows = scan_sheet(SESSIONS_SHEET_ID) or []
     if len(session_rows) < 2:
         logger.error("No sessions found in sheet")
         return templates.TemplateResponse("test.html", {"request": request})
