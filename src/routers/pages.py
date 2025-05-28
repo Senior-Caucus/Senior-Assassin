@@ -14,7 +14,7 @@ from .auth import check_session
 
 router = APIRouter()
 
-@router.get("/index", response_class=HTMLResponse)
+@router.get("/", response_class=HTMLResponse)
 def get_index(request: Request):
     return templates.TemplateResponse("new_index.html", {"request": request})
 
