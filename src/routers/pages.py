@@ -110,7 +110,6 @@ def target_page(request: Request):
     safety_rows = scan_sheet(SAFETY_OBJECT_SHEET_ID) or [] # Date (MM_DD_YYYY)	Object	Hint
     # Get today's date in MM_DD_YYYY format
     today = datetime.now(ZoneInfo("America/New_York")).strftime("%m_%d_%Y")
-    logger.info(f"Today's date: {today}")
     today_safety = str(None)
     tmr_hint = str(None)
     for i in range(1, len(safety_rows)):
