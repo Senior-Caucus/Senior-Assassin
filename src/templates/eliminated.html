@@ -5,6 +5,19 @@
 {% block content %}
   <div class="awaiting-screen">
     <h2 class="nosifer-regular">YOU ARE ELIMINATED</h2>
+    <h3>there might be an opportunity to get back in the game - keep an eye on our instagram</h3>
     <h3 id="countdown"></h3>
   </div>
+{% endblock %}
+
+{% block scripts %}
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-076DG6NV1N"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-076DG6NV1N');
+  </script>
 {% endblock %}

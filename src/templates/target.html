@@ -39,7 +39,7 @@
 
     <div class="target-safety">
       <p><b>Current Safety Object:</b> {{ today_safety }}</p>
-      <p><b>Next Safety Object:</b> {{ tmr_hint }}</p>
+      <p><b>Next Safety Object (Hint):</b> {{ tmr_hint }}</p>
     </div>
 
     <button id="rules-btn">Instructions/Rules</button>
@@ -75,4 +75,13 @@
 
 {% block scripts %}
 <script src="/static/js/target.js"></script>
+<!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-076DG6NV1N"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-076DG6NV1N');
+  </script>
 {% endblock %}
