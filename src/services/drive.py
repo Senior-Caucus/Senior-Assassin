@@ -99,7 +99,7 @@ def download_profile_picture(email: str) -> io.BytesIO:
         f"name = 'profile_pic.jpg' and mimeType != 'application/vnd.google-apps.folder' "
         f"and '{folder_id}' in parents"
     )
-    res = drive_service.files().list(q=query, spaces='drive', fields='files(id)',includeItemsFromAllDrives=True,supportsAllDrives=True).execute()
+    res = drive_service.files().list(q=query, spaces='drive', fields='files(id)').execute()
     files = res.get('files', [])
     if not files:
         raise FileNotFoundError("Profile picture not found.")
