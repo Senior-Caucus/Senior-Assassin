@@ -15,4 +15,13 @@
 {% block scripts %}
   <script src="/static/js/login.js" type="module"></script>
   <script src="/static/js/countdown.js" type="module"></script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-076DG6NV1N"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-076DG6NV1N');
+  </script>
 {% endblock %}
