@@ -3,9 +3,10 @@
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
 from fastapi.exceptions import HTTPException
+from datetime import datetime
 
 from ..config import templates
-from ..services.sheets import scan_sheet, get_target_info, SESSIONS_SHEET_ID, USERS_SHEET_ID
+from ..services.sheets import scan_sheet, get_target_info, SESSIONS_SHEET_ID, USERS_SHEET_ID, SAFETY_OBJECT_SHEET_ID
 from ..services.drive import download_profile_picture
 from ..services.logger import logger
 from .auth import check_session
@@ -104,13 +105,30 @@ def target_page(request: Request):
     target_info = get_target_info(user_email)
     target_email, target_name, target_picture, target_height, target_schedule = target_info
 
+    # 4. Get the day's safety object and the riddle for the next day
+    safety_rows = scan_sheet(SAFETY_OBJECT_SHEET_ID) or [] # Date (MM_DD_YYYY)	Object	Hint
+    # Get today's date in MM_DD_YYYY format
+    today = datetime.now().strftime("%m_%d_%Y")
+    today_safety = str(None)
+    tmr_hint = str(None)
+    for i in range(1, len(safety_rows)):
+        row = safety_rows[i]
+        if len(row) < 3:
+            continue
+        date_str, obj, hint = row[0], row[1], row[2]
+        if date_str == today:
+            today_safety = obj
+            tmr_hint = safety_rows[i + 1][2] if i + 1 < len(safety_rows) else str(None)
+
     return templates.TemplateResponse("target.html", {"request": request,
                                                         "user_email": user_email,
                                                         "target_email": target_email,
                                                         "target_name": target_name,
                                                         "target_picture": target_picture,
                                                         "target_height": target_height,
-                                                        "target_schedule": target_schedule})
+                                                        "target_schedule": target_schedule,
+                                                        "today_safety": today_safety,
+                                                        "tmr_hint": tmr_hint})
 
 @router.get("/profile_picture/{email}/{filename}")
 def serve_profile_picture(email: str, filename: str):
