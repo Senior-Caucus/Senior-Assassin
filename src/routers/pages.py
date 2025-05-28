@@ -4,6 +4,7 @@ from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
 from fastapi.exceptions import HTTPException
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from ..config import templates
 from ..services.sheets import scan_sheet, get_target_info, SESSIONS_SHEET_ID, USERS_SHEET_ID, SAFETY_OBJECT_SHEET_ID
@@ -108,7 +109,7 @@ def target_page(request: Request):
     # 4. Get the day's safety object and the riddle for the next day
     safety_rows = scan_sheet(SAFETY_OBJECT_SHEET_ID) or [] # Date (MM_DD_YYYY)	Object	Hint
     # Get today's date in MM_DD_YYYY format
-    today = datetime.now().strftime("%m_%d_%Y")
+    today = datetime.now(ZoneInfo("America/New_York")).strftime("%m_%d_%Y")
     logger.info(f"Today's date: {today}")
     today_safety = str(None)
     tmr_hint = str(None)
@@ -118,8 +119,8 @@ def target_page(request: Request):
             continue
         date_str, obj, hint = row[0], row[1], row[2]
         if date_str == today:
-            today_safety = safety_rows[i + 1][1] if i + 1 < len(safety_rows) else str(None)
-            tmr_hint = safety_rows[i + 2][2] if i + 2 < len(safety_rows) else str(None)
+            today_safety = obj
+            tmr_hint = safety_rows[i + 1][2] if i + 1 < len(safety_rows) else str(None)
 
     return templates.TemplateResponse("target.html", {"request": request,
                                                         "user_email": user_email,
