@@ -853,5 +853,6 @@ footer {
     margin-top: 1rem;
     font-size: 0.9rem;
     color: $light-text-color;
+    margin-bottom: 81px; /* Ensure room for footer */
   }
 }
