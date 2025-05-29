@@ -233,27 +233,21 @@ button#login {
       margin: 0;
       font-size: 1.25rem;
       font-weight: bold;
-      color: $accent-color;
+      color: #FFF;
     }
   
     a {
       text-decoration: none;
-      color: $accent-color;
+      color: #FFF;
       font-weight: bold;
     }
   
-    @media (max-width: 600px) {
-      position: absolute; /* Change to absolute for smaller screens */
-      top: auto; /* Reset top */
-      bottom: 1rem; /* Stick to bottom */
-      right: 1rem; /* Keep it on the right */
-    }
-  }
-
-  #target-profile-pic-reroute p a {
-    text-decoration: none;
-    color: $accent-color;
-    font-weight: bold;
+    // @media (max-width: 600px) {
+    //   position: absolute; /* Change to absolute for smaller screens */
+    //   top: auto; /* Reset top */
+    //   bottom: 1rem; /* Stick to bottom */
+    //   right: 1rem; /* Keep it on the right */
+    // }
   }
   
   .target-image img {
