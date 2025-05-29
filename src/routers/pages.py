@@ -28,7 +28,7 @@ def get_index(request: Request):
     return templates.TemplateResponse("new_index.html", {"request": request})
 
 @router.get("/failure", response_class=HTMLResponse)
-def get_index(request: Request):
+def get_failure(request: Request):
     return templates.TemplateResponse("failure.html", {"request": request})
 
 @router.get("/test", response_class=HTMLResponse)
