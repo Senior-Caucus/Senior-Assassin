@@ -10,39 +10,17 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentId = null;
 
   // Open modal
-  document.querySelectorAll(".review-btn").forEach(btn => {
-    btn.addEventListener("click", async () => {
-      currentId   = btn.dataset.id;
+    document.querySelectorAll(".review-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      currentId = btn.dataset.id;
       videoEl.src = btn.dataset.videoUrl;
-
-      // wait for the video’s metadata or first frame to be ready
-      await new Promise((resolve, reject) => {
-        function cleanup() {
-          videoEl.removeEventListener("loadeddata", onLoaded);
-          videoEl.removeEventListener("error", onError);
-        }
-        function onLoaded() {
-          cleanup();
-          resolve();
-        }
-        function onError(e) {
-          cleanup();
-          reject(new Error("Video failed to load"));
-        }
-        videoEl.addEventListener("loadeddata", onLoaded);
-        videoEl.addEventListener("error", onError);
-        videoEl.load();
-      });
-
-      // only show the modal after the video is ready
+      videoEl.load();
       modal.classList.remove("hidden");
-
-      // now it's safe to set image URLs too
-      //assassinImg.src = btn.dataset.assassinUrl;
-      //targetImg.src   = btn.dataset.targetUrl;
-
-      //console.log(`Assassin URL: ${btn.dataset.assassinUrl}`);
-      //console.log(`Target URL: ${btn.dataset.targetUrl}`);
+      // Add the url for the profile pictures
+      //assassinImg.src   = btn.dataset.assassinUrl;
+      //targetImg.src     = btn.dataset.targetUrl;
+      //console.log(Assassin URL: ${btn.dataset.assassinUrl});
+      //console.log(Target URL: ${btn.dataset.targetUrl});
     });
   });
 
