@@ -485,6 +485,14 @@ button#login {
       flex-direction: row;
       align-items: center;
       gap: 1rem;
+
+      div img {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 2px solid $accent-color;
+      }
     }
   
     video {
