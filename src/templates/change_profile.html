@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Profile Picture Change{% endblock %}
+
+{% block content %}
+<div class="winner-bg profile-change">
+  <h2 class="nosifer-regular">Change Profile Picture</h2>
+  <!-- current picture preview -->
+  <img id="current-pic" class="current-pic" alt="Current Profile Picture">
+
+  <form id="pic-form" enctype="multipart/form-data">
+    <label for="pic-input" class="file-label">Choose a JPEG/PNG…</label>
+    <input type="file" id="pic-input" name="file" accept="image/*" required>
+    <button type="submit" class="btn-primary">Upload &amp; Replace</button>
+  </form>
+
+  <div id="status" class="status-msg"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script type="module">
+  const status    = document.getElementById('status');
+  const form      = document.getElementById('pic-form');
+  const fileInput = document.getElementById('pic-input');
+  const currentPic= document.getElementById('current-pic');
+
+  // 1) Fetch the logged-in user’s email
+  async function getEmail() {
+    const res = await fetch('/get_email');
+    if (!res.ok) throw new Error('Cannot retrieve user email');
+    const { email } = await res.json();
+    return encodeURIComponent(email);
+  }
+
+  // 2) Load & show the existing profile_pic.jpg
+  async function loadCurrentPicture() {
+    try {
+      const email = await getEmail();
+      // add a cache-buster so updates show immediately
+      currentPic.src = `/profile_picture/${email}/profile_pic.jpg?${Date.now()}`;
+    } catch (err) {
+      console.error(err);
+      status.textContent = 'Could not load current profile picture.';
+    }
+  }
+
+  // 3) Handle form submit: upload → refresh on success
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    status.textContent = 'Uploading…';
+
+    const formData = new FormData();
+    formData.append('file', fileInput.files[0]);
+
+    try {
+      const email = await getEmail();
+      const res = await fetch(`/profile_picture/${email}`, {
+        method: 'POST',
+        body: formData
+      });
+
+      if (!res.ok) {
+        const text = await res.text();
+        throw new Error(text);
+      }
+
+      status.textContent = '✅ Picture replaced! Reloading…';
+      // refresh so the new image appears
+      setTimeout(() => location.reload(), 1000);
+
+    } catch (err) {
+      console.error(err);
+      status.textContent = `❌ ${err.message}`;
+    }
+  });
+
+  // Kick off the preview load
+  loadCurrentPicture();
+</script>
+{% endblock %}

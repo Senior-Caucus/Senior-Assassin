@@ -62,6 +62,16 @@ def upload_file_to_drive(name, filepath, mime_type, parents=None):
     ).execute()
     return file.get('id')
 
+def upload_file_to_drive_pfp(name: str, file_stream: io.BytesIO, mime_type: str, parents: list):
+    file_metadata = {"name": name, "parents": parents}
+    media = MediaIoBaseUpload(file_stream, mimetype=mime_type)
+    file = drive_service.files().create(
+        body=file_metadata,
+        media_body=media,
+        fields="id"
+    ).execute()
+    return file["id"]
+
 def _ensure_user_folder(email: str) -> str:
     """Find or create a Drive folder named after the user's email."""
     parent_id = DRIVE_PICTURES_FOLDER_ID

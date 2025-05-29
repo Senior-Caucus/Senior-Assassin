@@ -1,14 +1,16 @@
 # src/routers/pages.py
 
-from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse, Response
+from fastapi import APIRouter, Request, UploadFile, File
+from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse, Response, JSONResponse
 from fastapi.exceptions import HTTPException
+from googleapiclient.errors import HttpError
 from datetime import datetime
 from zoneinfo import ZoneInfo
+import io
 
 from ..config import templates
 from ..services.sheets import scan_sheet, get_target_info, SESSIONS_SHEET_ID, USERS_SHEET_ID, SAFETY_OBJECT_SHEET_ID
-from ..services.drive import download_profile_picture
+from ..services.drive import _ensure_user_folder, drive_service, upload_file_to_drive_pfp, download_profile_picture
 from ..services.logger import logger
 from .auth import check_session
 
@@ -180,3 +182,62 @@ def get_eliminated_page(request: Request):
     if not session_id or not check_session(session_id):
         return templates.TemplateResponse("new_index.html", {"request": request})
     return templates.TemplateResponse("eliminated.html", {"request": request})
+
+@router.get("/profile", response_class=HTMLResponse)
+def change_profile_picture_endpoint(request: Request):
+    session_id = request.cookies.get("session_id")
+    if not session_id or not check_session(session_id):
+        return templates.TemplateResponse("new_index.html", {"request": request})
+    return templates.TemplateResponse("change_profile.html", {"request": request})
+
+@router.post("/upload_new_profile_picture/{email}", response_class=JSONResponse)
+async def replace_profile_picture(email: str, file: UploadFile = File(...)):
+    # normalize email
+    email = email.replace("%40", "@")
+    folder_id = _ensure_user_folder(email)
+
+    # 1) delete any existing profile_pic.jpg in that folder
+    try:
+        # list files named “profile_pic.jpg”
+        q = (
+            f"name = 'profile_pic.jpg' and "
+            f"'{folder_id}' in parents and "
+            "mimeType != 'application/vnd.google-apps.folder'"
+        )
+        resp = drive_service.files().list(q=q, spaces="drive", fields="files(id)").execute()
+        for f in resp.get("files", []):
+            drive_service.files().delete(fileId=f["id"]).execute()
+    except HttpError as e:
+        raise HTTPException(500, f"Failed to clean up old pictures: {e}")
+
+    # 2) upload the new one under the same name
+    contents = await file.read()
+    bio = io.BytesIO(contents)
+    bio.name = "profile_pic.jpg"
+    try:
+        new_file = upload_file_to_drive_pfp(
+            name="profile_pic.jpg",
+            file_stream=bio,
+            mime_type=str(file.content_type),
+            parents=[folder_id]
+        )
+    except Exception as e:
+        raise HTTPException(500, f"Upload failed: {e}")
+
+    return JSONResponse({"status": "ok", "fileId": new_file})
+
+@router.get("/get_email", response_class=JSONResponse)
+def get_email(request: Request):
+    session_id = request.cookies.get("session_id")
+    if not session_id or not check_session(session_id):
+        return JSONResponse({"status": "error", "message": "Invalid session"}, status_code=401)
+
+    session_rows = scan_sheet(SESSIONS_SHEET_ID) or []
+    sessions_by_id = {row[0]: row for row in session_rows[1:] if row}
+    session = sessions_by_id.get(session_id)
+
+    if not session or len(session) < 3:
+        return JSONResponse({"status": "error", "message": "Session not found"}, status_code=404)
+
+    user_email = session[2]
+    return JSONResponse({"status": "ok", "email": user_email})
