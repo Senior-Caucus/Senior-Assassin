@@ -58,7 +58,7 @@
 
     try {
       const email = await getEmail();
-      const res = await fetch(`/profile_picture/${email}`, {
+      const res = await fetch(`/upload_new_profile_picture/${email}`, {
         method: 'POST',
         body: formData
       });
