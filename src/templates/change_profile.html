@@ -25,13 +25,16 @@
   const fileInput = document.getElementById('pic-input');
   const currentPic= document.getElementById('current-pic');
 
-  // 1) Fetch the logged-in user’s email
-  async function getEmail() {
+    // 1) Fetch the logged-in user’s email, with only “@” → “%40”
+    async function getEmail() {
     const res = await fetch('/get_email');
-    if (!res.ok) throw new Error('Cannot retrieve user email');
-    const { email } = await res.json();
-    return encodeURIComponent(email);
-  }
+    if (!res.ok) {
+        throw new Error('Cannot retrieve user email');
+    }
+    const data = await res.json();
+    // only encode “@” signs
+    return data.email.replace(/@/g, '%40');
+    }
 
   // 2) Load & show the existing profile_pic.jpg
   async function loadCurrentPicture() {
@@ -54,9 +57,7 @@
     formData.append('file', fileInput.files[0]);
 
     try {
-      let email = await getEmail();
-      // encodeURIComponent to handle special characters
-        email = encodeURIComponent(email);
+      const email = await getEmail();
       const res = await fetch(`/profile_picture/${email}`, {
         method: 'POST',
         body: formData
