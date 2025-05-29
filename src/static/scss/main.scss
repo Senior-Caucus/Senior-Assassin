@@ -211,6 +211,50 @@ button#login {
     padding-top: 64px;
     max-width: 100vw;
   }
+
+  // button stuck to the top right of the page
+  #target-profile-pic-reroute {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.4);
+    z-index: 1000; /* Ensure it stays on top */
+  
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+    }
+  
+    p {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: $accent-color;
+    }
+  
+    a {
+      text-decoration: none;
+      color: $accent-color;
+      font-weight: bold;
+    }
+  
+    @media (max-width: 600px) {
+      position: absolute; /* Change to absolute for smaller screens */
+      top: auto; /* Reset top */
+      bottom: 1rem; /* Stick to bottom */
+      right: 1rem; /* Keep it on the right */
+    }
+  }
+
+  #target-profile-pic-reroute p a {
+    text-decoration: none;
+    color: $accent-color;
+    font-weight: bold;
+  }
   
   .target-image img {
     width: 250px;
