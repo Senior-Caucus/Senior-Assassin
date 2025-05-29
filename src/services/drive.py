@@ -17,7 +17,7 @@ credentials = service_account.Credentials.from_service_account_file(
     scopes=SCOPES
 )
 
-drive_service = build('drive', 'v3', credentials=credentials)
+drive_service = build('drive', 'v3', credentials=credentials, cache_discovery=False)
 
 def _get_user_folder_id(email: str) -> str:
     """Return the Drive folder ID for this user (assumes it already exists)."""
