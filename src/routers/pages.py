@@ -18,6 +18,10 @@ router = APIRouter()
 def get_index(request: Request):
     return templates.TemplateResponse("new_index.html", {"request": request})
 
+@router.get("/failure", response_class=HTMLResponse)
+def get_index(request: Request):
+    return templates.TemplateResponse("failure.html", {"request": request})
+
 @router.get("/test", response_class=HTMLResponse)
 def get_new_index(request: Request):
     return RedirectResponse(url="/", status_code=302)
@@ -52,14 +56,14 @@ def login(request: Request):
     # 4. Verify session exists
     session = sessions_by_id.get(session_id)
     if not session:
-        return RedirectResponse(url="/test", status_code=302)
+        return RedirectResponse(url="/failure", status_code=302)
 
     # 5. Verify user exists
     # session row layout: [session_id, timestamp, email, full_name, admin_flag]
     email = session[2] if len(session) >= 3 else None
     user  = users_by_email.get(email, None)
     if not email or not user:
-        return RedirectResponse(url="/test", status_code=302)
+        return RedirectResponse(url="/failure", status_code=302)
 
     # 6. Admins go to dashboard
     admin_flag = session[4] if len(session) >= 5 else ""
