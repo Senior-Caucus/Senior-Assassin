@@ -54,7 +54,7 @@
     formData.append('file', fileInput.files[0]);
 
     try {
-      const email = await getEmail();
+      let email = await getEmail().replace(/@/g, '%40');
       const res = await fetch(`/profile_picture/${email}`, {
         method: 'POST',
         body: formData
