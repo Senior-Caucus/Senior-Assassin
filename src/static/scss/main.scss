@@ -779,6 +779,7 @@ footer {
   // keep text to the left
   text-align: left;
   margin: 0 auto;
+  margin-bottom: 64px; /* Ensure room for footer */
 }
 
 .rules-section-add {
