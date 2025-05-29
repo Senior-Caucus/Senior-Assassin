@@ -1,7 +1,7 @@
 # src/routers/pages.py
 
 from fastapi import APIRouter, Request
-from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse
+from fastapi.responses import HTMLResponse, RedirectResponse, StreamingResponse, Response
 from fastapi.exceptions import HTTPException
 from datetime import datetime
 from zoneinfo import ZoneInfo
@@ -13,6 +13,15 @@ from ..services.logger import logger
 from .auth import check_session
 
 router = APIRouter()
+
+@router.get("/robots.txt", response_class=Response, include_in_schema=False)
+async def robots_txt():
+    content = (
+        "User-agent: *\n"
+        "Allow: /\n"
+        "Disallow: /*\n"
+    )
+    return Response(content=content, media_type="text/plain")
 
 @router.get("/", response_class=HTMLResponse)
 def get_index(request: Request):
