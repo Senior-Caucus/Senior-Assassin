@@ -38,11 +38,11 @@ document.addEventListener("DOMContentLoaded", () => {
       modal.classList.remove("hidden");
 
       // now it's safe to set image URLs too
-      assassinImg.src = btn.dataset.assassinUrl;
-      targetImg.src   = btn.dataset.targetUrl;
+      //assassinImg.src = btn.dataset.assassinUrl;
+      //targetImg.src   = btn.dataset.targetUrl;
 
-      console.log(`Assassin URL: ${btn.dataset.assassinUrl}`);
-      console.log(`Target URL: ${btn.dataset.targetUrl}`);
+      //console.log(`Assassin URL: ${btn.dataset.assassinUrl}`);
+      //console.log(`Target URL: ${btn.dataset.targetUrl}`);
     });
   });
 
