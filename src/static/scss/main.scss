@@ -209,6 +209,7 @@ button#login {
     margin-bottom: 1rem;
     text-shadow: 0 0 8px $accent-color;
     padding-top: 64px;
+    max-width: 100vw;
   }
   
   .target-image img {
@@ -219,6 +220,10 @@ button#login {
     border: 3px solid $accent-color;
     box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
     margin-bottom: 1rem;
+  }
+
+  #open-evidence {
+    padding-bottom: 64px; /* Ensure room for footer */
   }
   
   .action-btn {
