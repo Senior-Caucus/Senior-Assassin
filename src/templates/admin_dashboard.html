@@ -41,6 +41,8 @@
                 class="review-btn"
                 data-video-url="/admin/video_evidence/{{ ev.full_evidence_path }}"
                 data-id="{{ ev.evidence_id }}"
+                assassin-url="/profile_picture/{{ ev.assassin }}/profile_pic.jpg"
+                target-url="/profile_picture/{{ ev.target }}/profile_pic.jpg"
               >
                 Review
               </button>
@@ -56,7 +58,14 @@
   <div id="review-modal" class="modal hidden">
     <div class="modal-content">
       <button class="close-btn">&times;</button>
+
+      <div class="profiles">
+        <img id="assassin-pic" alt="Assassin's profile" />
+        <img id="target-pic"   alt="Target's profile" />
+      </div>
+
       <video id="evidence-video" controls></video>
+
       <div class="modal-actions">
         <button class="approve-btn">Approve</button>
         <button class="deny-btn">Deny</button>

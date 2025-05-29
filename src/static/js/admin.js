@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const videoEl = document.getElementById("evidence-video");
   const approveBtn = document.querySelector(".approve-btn");
   const denyBtn    = document.querySelector(".deny-btn");
+  const assassinImg  = modal.querySelector("#assassin-pic");
+  const targetImg    = modal.querySelector("#target-pic");
 
   let currentId = null;
 
@@ -12,6 +14,9 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", () => {
       currentId = btn.dataset.id;
       videoEl.src = btn.dataset.videoUrl;
+      // Add the url for the profile pictures
+      assassinImg.src   = btn.dataset.assassinUrl;
+      targetImg.src     = btn.dataset.targetUrl;
       modal.classList.remove("hidden");
     });
   });

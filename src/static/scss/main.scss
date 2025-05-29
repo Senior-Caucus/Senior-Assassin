@@ -399,6 +399,7 @@ button#login {
     padding: 2rem;
     box-sizing: border-box;
     color: white;
+    overflow-y: scroll;
   }
   
   .admin-meta {
@@ -468,6 +469,8 @@ button#login {
   }
   
   .modal-content {
+    display: flex;
+    flex-direction: column;
     background: #1a1a1a;
     padding: 2rem;
     border: 2px solid $accent-color;
@@ -476,12 +479,19 @@ button#login {
     max-width: 600px;
     color: white;
     position: relative;
+
+    .profiles {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 1rem;
+    }
   
     video {
       width: 100%;
-      height: auto;
       margin-bottom: 1rem;
       border: 1px solid #444;
+      max-height: 50vh;
     }
   
     .modal-actions {
