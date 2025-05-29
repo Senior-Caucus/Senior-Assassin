@@ -55,7 +55,8 @@
 
     try {
       let email = await getEmail();
-      email = email.replace(/@/g, '%40'); // encode @ to avoid issues in URL
+      // encodeURIComponent to handle special characters
+        email = encodeURIComponent(email);
       const res = await fetch(`/profile_picture/${email}`, {
         method: 'POST',
         body: formData
