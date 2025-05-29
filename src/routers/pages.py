@@ -106,21 +106,21 @@ def target_page(request: Request):
             break
 
     if not session_id or not session_valid:
-        return templates.TemplateResponse("test.html", {"request": request})
+        return templates.TemplateResponse("new_index.html", {"request": request})
     
     # 2. Get user email from session
     if len(session_rows) < 2:
         logger.error("No sessions found in sheet")
-        return templates.TemplateResponse("test.html", {"request": request})
+        return templates.TemplateResponse("new_index.html", {"request": request})
     sessions_by_id = {row[0]: row for row in session_rows[1:] if row}
     session = sessions_by_id.get(session_id)
     if not session or len(session) < 3:
         logger.error("Session not found or invalid format")
-        return templates.TemplateResponse("test.html", {"request": request})
+        return templates.TemplateResponse("new_index.html", {"request": request})
     user_email = session[2]
     if not user_email:
         logger.error("User email not found in session")
-        return templates.TemplateResponse("test.html", {"request": request})
+        return templates.TemplateResponse("new_index.html", {"request": request})
     
     # 3. Run the get target_info function to get the target info
     target_info = get_target_info(user_email)
@@ -164,19 +164,19 @@ def serve_profile_picture(email: str, filename: str):
 def get_awaiting_page(request: Request):
     session_id = request.cookies.get("session_id")
     if not session_id or not check_session(session_id):
-        return templates.TemplateResponse("test.html", {"request": request})
+        return templates.TemplateResponse("new_index.html", {"request": request})
     return templates.TemplateResponse("awaiting.html", {"request": request})
 
 @router.get("/winner", response_class=HTMLResponse)
 def get_winner_page(request: Request):
     session_id = request.cookies.get("session_id")
     if not session_id or not check_session(session_id):
-        return templates.TemplateResponse("test.html", {"request": request})
+        return templates.TemplateResponse("new_index.html", {"request": request})
     return templates.TemplateResponse("winner.html", {"request": request})
 
 @router.get("/eliminated", response_class=HTMLResponse)
 def get_eliminated_page(request: Request):
     session_id = request.cookies.get("session_id")
     if not session_id or not check_session(session_id):
-        return templates.TemplateResponse("test.html", {"request": request})
+        return templates.TemplateResponse("new_index.html", {"request": request})
     return templates.TemplateResponse("eliminated.html", {"request": request})
