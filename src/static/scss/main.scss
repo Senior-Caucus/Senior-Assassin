@@ -185,10 +185,9 @@ button#login {
 
 // Target Page Styling
 .target-page {
-    height: calc(100vh - 128px);
+    height: calc(100vh - 64px);
     overflow-y: scroll;
-    padding-top: 64px;
-    padding-bottom: 64px;
+    margin-bottom: 64px;
     width: 100vw;
     background:
       linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
@@ -209,11 +208,12 @@ button#login {
     color: $accent-color;
     margin-bottom: 1rem;
     text-shadow: 0 0 8px $accent-color;
+    padding-top: 64px;
   }
   
   .target-image img {
-    width: 200px;
-    height: 200px;
+    width: 250px;
+    height: 250px;
     object-fit: cover;
     border-radius: 50%;
     border: 3px solid $accent-color;
