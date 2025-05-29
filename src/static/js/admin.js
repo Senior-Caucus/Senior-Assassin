@@ -15,10 +15,10 @@ document.addEventListener("DOMContentLoaded", () => {
       currentId = btn.dataset.id;
       videoEl.src = btn.dataset.videoUrl;
       // Add the url for the profile pictures
-      assassinImg.src   = btn.dataset.assassinUrl;
-      targetImg.src     = btn.dataset.targetUrl;
-      console.log(`Assassin URL: ${btn.dataset.assassinUrl}`);
-      console.log(`Target URL: ${btn.dataset.targetUrl}`);
+      //assassinImg.src   = btn.dataset.assassinUrl;
+      //targetImg.src     = btn.dataset.targetUrl;
+      //console.log(`Assassin URL: ${btn.dataset.assassinUrl}`);
+      //console.log(`Target URL: ${btn.dataset.targetUrl}`);
       videoEl.load();
       modal.classList.remove("hidden");
     });
