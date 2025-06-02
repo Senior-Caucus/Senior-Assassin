@@ -10,12 +10,12 @@ def randomize_targets():
     # Header is row 1
     header, *all_users = values
 
-    # Filter out admins
-    users = [row for row in all_users if len(row) > 1 and row[1].strip().lower() != "admin"]
+    # Filter out admins and make sure the user is alive
+    users = [row for row in all_users if len(row) > 1 and row[1].strip().lower() != "admin" and row[9].strip().lower() == "true"]
     emails = [row[0] for row in users]
 
     if len(emails) < 2:
-        print("Not enough non-admin users to randomize targets.")
+        print("Not enough valid users to randomize targets.")
         return
 
     # Shuffle and assign
