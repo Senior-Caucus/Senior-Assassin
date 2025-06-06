@@ -6,7 +6,6 @@ def eliminate_ppl():
 
     with open("to_keep.txt", "r") as f:
         to_keep = f.readlines()
-    print(to_keep)
 
     header = users[0]
     for user in users[1:]:
@@ -14,5 +13,4 @@ def eliminate_ppl():
         if email not in to_keep:
             print(email)
 
-if __name__ == "main":
-    eliminate_ppl()
+eliminate_ppl()
