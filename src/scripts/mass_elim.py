@@ -15,6 +15,6 @@ def eliminate_ppl():
         except:
             isAlive = "false"
         if email not in to_keep and isAlive == "true":
-            print(email)
+            print(user[header.index("fullName")])
 
 eliminate_ppl()
