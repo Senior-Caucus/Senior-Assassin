@@ -6,6 +6,7 @@ def eliminate_ppl():
 
     with open("./src/scripts/to_keep.txt", "r") as f:
         to_keep = f.readlines()
+    print(to_keep)
 
     header = users[0]
     for user in users[1:]:
