@@ -4,7 +4,7 @@ def eliminate_ppl():
     users = scan_sheet(USERS_SHEET_ID)
     elim_arr = []
 
-    with open("to_keep.txt", "r") as f:
+    with open("./src/scripts/to_keep.txt", "r") as f:
         to_keep = f.readlines()
 
     header = users[0]
