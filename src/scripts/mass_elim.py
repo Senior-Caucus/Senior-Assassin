@@ -10,7 +10,10 @@ def eliminate_ppl():
     header = users[0]
     for user in users[1:]:
         email = user[header.index("email")]
-        isAlive = user[header.index("alive")].lower()
+        try:
+            isAlive = user[header.index("alive")].lower()
+        except:
+            isAlive = "false"
         if email not in to_keep and isAlive == "true":
             print(email)
 
