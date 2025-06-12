@@ -37,7 +37,8 @@ document.addEventListener("DOMContentLoaded", () => {
     } else if (Math.abs(n - 1/3) < 0.01) {
       imgs.push(`<img src="/static/images/hearts/thirdheart.png" alt="1/3 heart" style="width:28px;height:28px;vertical-align:middle;">`);
     }
-    container.innerHTML = imgs.join('');
+    // Wrap hearts in a flexbox that wraps
+    container.innerHTML = `<div style="display:flex;flex-wrap:wrap;gap:2px;justify-content:center;max-width:320px;">${imgs.join('')}</div>`;
   }
 
   // Show current user's hearts
