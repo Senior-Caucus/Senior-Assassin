@@ -31,11 +31,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const evidenceList = EVIDENCE.filter(e => e.target === email);
     let evidenceHtml = "";
     if (evidenceList.length > 0) {
-      evidenceHtml = `<div style='margin-top:1em;'><b>Evidence submitted for this user:</b><ul>` +
+      evidenceHtml = `<div style='margin-top:1em;'><b>Evidence submitted for this user:</b><div style='display:flex;flex-direction:column;align-items:center;gap:0.5em;margin-top:0.5em;'>` +
         evidenceList.map(function(e) {
-          return `<li>By: ${e.assassin}${e.comments ? ' (Comment: ' + e.comments + ')' : ''}</li>`;
+          return `<div style='background:rgba(255,255,255,0.07);border-radius:6px;padding:0.5em 1em;max-width:350px;text-align:center;'><b>By:</b> ${e.assassin}${e.comments ? `<br><span style='color:#ccc;font-size:0.95em;'>Comment: ${e.comments}</span>` : ''}</div>`;
         }).join('') +
-        `</ul></div>`;
+        `</div></div>`;
     } else {
       evidenceHtml = `<div style='margin-top:1em;'><i>No evidence submitted for this user yet.</i></div>`;
     }
@@ -43,34 +43,48 @@ document.addEventListener("DOMContentLoaded", () => {
     let imgSize = 160;
     if (window.innerWidth > 900) imgSize = 220;
     else if (window.innerWidth > 600) imgSize = 180;
-    // Loading spinner
-    // Evidence submit form (always rendered in user info)
-    let already = EVIDENCE.some(e => e.assassin === CURRENT_USER_EMAIL && e.target === user.email);
-    let submitForm = `
-      <form id="evidence-form" method="post" enctype="multipart/form-data" style="margin-top:1.5em;">
-        <label for="video">Video Evidence (max 25MB):</label>
-        <input type="file" name="video" id="video" accept="video/*" required><br>
-        <label for="comments">Comments:</label>
-        <textarea name="comments" id="comments" rows="3" placeholder="Optional..."></textarea>
-        <input type="hidden" name="target_email" id="target_email" value="${user.email}">
-        <input type="hidden" name="user_email" value="${CURRENT_USER_EMAIL}">
-        <div id="progress-container" class="hidden"><div id="upload-progress"></div></div>
-        <p id="upload-msg" class="upload-msg"></p>
-        <button type="submit" class="submit-btn" id="submit-evidence-btn" ${already ? 'disabled' : ''}>${already ? 'Already Submitted' : 'Submit Evidence'}</button>
-      </form>
-    `;
+    // Loading spinner (CSS)
+    let spinnerHtml = `<div id="img-loading-spinner" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:40px;height:40px;display:flex;align-items:center;justify-content:center;">
+      <div class="loader-circle"></div>
+    </div>`;
+    // If user has 0 hearts, show cannot be eliminated message
+    let hearts = parseFloat(user.hearts || "0");
+    let submitForm = "";
+    if (hearts === 0) {
+      submitForm = `<div style='margin-top:1.5em;font-weight:bold;color:#ffb3b3;'>This user cannot be eliminated at the moment.</div>`;
+    } else {
+      let already = EVIDENCE.some(e => e.assassin === CURRENT_USER_EMAIL && e.target === user.email);
+      submitForm = `
+        <form id="evidence-form" method="post" enctype="multipart/form-data" style="margin-top:1.5em;display:flex;flex-direction:column;align-items:center;gap:0.5em;max-width:350px;">
+          <label for="video" style="width:100%;text-align:left;">Video Evidence (max 25MB):</label>
+          <input type="file" name="video" id="video" accept="video/*" required style="width:100%;">
+          <label for="comments" style="width:100%;text-align:left;">Comments:</label>
+          <textarea name="comments" id="comments" rows="3" placeholder="Optional..." style="width:100%;border-radius:6px;"></textarea>
+          <input type="hidden" name="target_email" id="target_email" value="${user.email}">
+          <input type="hidden" name="user_email" value="${CURRENT_USER_EMAIL}">
+          <div id="progress-container" class="hidden" style="width:100%;"><div id="upload-progress" style="height:8px;background:#fff;width:0%;border-radius:4px;"></div></div>
+          <p id="upload-msg" class="upload-msg"></p>
+          <button type="submit" class="submit-btn" id="submit-evidence-btn" style="width:100%;" ${already ? 'disabled' : ''}>${already ? 'Already Submitted' : 'Submit Evidence'}</button>
+        </form>
+      `;
+    }
     userInfoDiv.innerHTML = `
-      <h3>${user.fullName} (${user.hearts || 0}❤)</h3>
-      <p><b>Height:</b> ${user.feet || ''}'${user.inches || ''}"</p>
-      <table><thead><tr><th>Period</th><th>Class</th></tr></thead><tbody>
-        ${(user.schedule||'').split(',').map(function(c,i){return `<tr><td>${i+1}</td><td>${c||'None'}</td></tr>`;}).join('')}
-      </tbody></table>
-      <div style="position:relative;min-height:${imgSize}px;">
-        <div id="img-loading-spinner" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:2em;">⏳</div>
-        <img id="profile-pic" src="${user.picture}" alt="Profile Picture" style="display:none;max-width:${imgSize}px;max-height:${imgSize}px;border-radius:8px;" onerror="this.style.display='none'">
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <h3 style="margin-bottom:0.5em;">${user.fullName} (${user.hearts || 0}❤)</h3>
+        <div style="position:relative;min-height:${imgSize}px;margin-bottom:1em;">
+          ${spinnerHtml}
+          <img id="profile-pic" src="${user.picture}" alt="Profile Picture" style="display:none;max-width:${imgSize}px;max-height:${imgSize}px;border-radius:8px;box-shadow:0 0 12px #000;" onerror="this.style.display='none'">
+        </div>
+        <p style="margin:0.5em 0 1em 0;"><b>Height:</b> ${user.feet || ''}'${user.inches || ''}"</p>
+        <table style="margin:0 auto 1em auto;min-width:220px;max-width:350px;background:rgba(255,255,255,0.07);border-radius:8px;">
+          <thead><tr><th style="padding:0.5em 1em;">Period</th><th style="padding:0.5em 1em;">Class</th></tr></thead>
+          <tbody>
+            ${(user.schedule||'').split(',').map(function(c,i){return `<tr><td style='padding:0.5em 1em;'>${i+1}</td><td style='padding:0.5em 1em;'>${c||'None'}</td></tr>`;}).join('')}
+          </tbody>
+        </table>
+        ${evidenceHtml}
+        ${submitForm}
       </div>
-      ${evidenceHtml}
-      ${submitForm}
     `;
     // Image loading logic
     const img = document.getElementById('profile-pic');
@@ -149,7 +163,6 @@ document.addEventListener("DOMContentLoaded", () => {
         xhr.send(formData);
       });
     }
-    checkEvidenceDisabled(user.email);
   }
 
   function checkEvidenceDisabled(targetEmail) {
@@ -173,3 +186,9 @@ document.addEventListener("DOMContentLoaded", () => {
     modal.classList.remove("hidden");
   });
 });
+
+// Loader CSS
+const style = document.createElement('style');
+style.innerHTML = `.loader-circle { border: 4px solid #fff; border-top: 4px solid rgba(255,255,255,0.2); border-radius: 50%; width: 36px; height: 36px; animation: spin 1s linear infinite; }
+@keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }`;
+document.head.appendChild(style);
