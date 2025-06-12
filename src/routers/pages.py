@@ -9,7 +9,7 @@ from zoneinfo import ZoneInfo
 import io
 
 from ..config import templates
-from ..services.sheets import scan_sheet, get_target_info, SESSIONS_SHEET_ID, USERS_SHEET_ID, SAFETY_OBJECT_SHEET_ID
+from ..services.sheets import scan_sheet, get_target_info, SESSIONS_SHEET_ID, USERS_SHEET_ID, EVIDENCE_SHEET_ID
 from ..services.drive import _ensure_user_folder, drive_service, upload_file_to_drive_pfp, download_profile_picture
 from ..services.logger import logger
 from .auth import check_session
@@ -101,15 +101,13 @@ def target_page(request: Request):
     session_id = request.cookies.get("session_id")
     session_rows = scan_sheet(SESSIONS_SHEET_ID) or []
     session_valid = False
-
     for row in session_rows[1:]:
         if row and row[0] == session_id:
             session_valid = True
             break
-
     if not session_id or not session_valid:
         return templates.TemplateResponse("new_index.html", {"request": request})
-    
+
     # 2. Get user email from session
     if len(session_rows) < 2:
         logger.error("No sessions found in sheet")
@@ -123,35 +121,37 @@ def target_page(request: Request):
     if not user_email:
         logger.error("User email not found in session")
         return templates.TemplateResponse("new_index.html", {"request": request})
-    
-    # 3. Run the get target_info function to get the target info
-    target_info = get_target_info(user_email)
-    target_email, target_name, target_picture, target_height, target_schedule = target_info
 
-    # 4. Get the day's safety object and the riddle for the next day
-    safety_rows = scan_sheet(SAFETY_OBJECT_SHEET_ID) or [] # Date (MM_DD_YYYY)	Object	Hint
-    # Get today's date in MM_DD_YYYY format
-    today = datetime.now(ZoneInfo("America/New_York")).strftime("%m_%d_%Y")
-    today_safety = str(None)
-    tmr_hint = str(None)
-    for i in range(1, len(safety_rows)):
-        row = safety_rows[i]
-        if len(row) < 3:
+    # 3. Get all users and their info
+    user_rows = scan_sheet(USERS_SHEET_ID) or []
+    if len(user_rows) < 2:
+        logger.error("No users found in sheet")
+        return templates.TemplateResponse("new_index.html", {"request": request})
+    user_header = user_rows[0]
+    users = []
+    for row in user_rows[1:]:
+        if not row or len(row) < len(user_header):
             continue
-        date_str, obj, hint = row[0], row[1], row[2]
-        if date_str == today:
-            today_safety = obj
-            tmr_hint = safety_rows[i + 1][2] if i + 1 < len(safety_rows) else str(None)
+        user_dict = {col: row[i] if i < len(row) else "" for i, col in enumerate(user_header)}
+        # Add picture path
+        user_dict["picture"] = f"/profile_picture/{user_dict['email']}/profile_pic.jpg"
+        users.append(user_dict)
 
-    return templates.TemplateResponse("target.html", {"request": request,
-                                                        "user_email": user_email,
-                                                        "target_email": target_email,
-                                                        "target_name": target_name,
-                                                        "target_picture": target_picture,
-                                                        "target_height": target_height,
-                                                        "target_schedule": target_schedule,
-                                                        "today_safety": today_safety,
-                                                        "tmr_hint": tmr_hint})
+    # 4. Get all evidence records
+    evidence_rows = scan_sheet(EVIDENCE_SHEET_ID) or []
+    evidence_header = evidence_rows[0] if evidence_rows else []
+    evidence = []
+    for row in evidence_rows[1:]:
+        if not row or len(row) < len(evidence_header):
+            continue
+        evidence.append({col: row[i] if i < len(row) else "" for i, col in enumerate(evidence_header)})
+
+    return templates.TemplateResponse("target.html", {
+        "request": request,
+        "user_email": user_email,
+        "users": users,
+        "evidence": evidence
+    })
 
 @router.get("/profile_picture/{email}/{filename}")
 def serve_profile_picture(email: str, filename: str):

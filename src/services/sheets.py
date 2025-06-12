@@ -14,9 +14,9 @@ load_dotenv(dotenv_path=".env.local")
 SERVICE_ACCOUNT_FILE = os.getenv("GOOGLE_SERVICE_ACCOUNT_PATH")
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
 
-USERS_SHEET_ID = '164g6_pWSpecS8DQGR1utIVwAhxNYxBVCbPpyqkcbyD0' #   email	role	currentTarget	assassinationStatus	createdAt	fullName	waiting	picturePath	schedule	alive	feet	inches
+USERS_SHEET_ID = '164g6_pWSpecS8DQGR1utIVwAhxNYxBVCbPpyqkcbyD0' #   email	role	currentTarget	assassinationStatus	createdAt	fullName	waiting	picturePath	schedule	alive	feet	inches  hearts
 METADATA_SHEET_ID = '1g6Q_G0Mr4yNfs3JlqgR2WEYoPfNRn1xHOTXf'
-EVIDENCE_SHEET_ID = '1pO6_1kKZ4orrH7WP666Y3hcrm4rKR09TqGbSuFMDKSA'
+EVIDENCE_SHEET_ID = '1pO6_1kKZ4orrH7WP666Y3hcrm4rKR09TqGbSuFMDKSA' #  evidence_id	assassin	target	evidence_path	evidence_size	approved ...
 SESSIONS_SHEET_ID = '1nqEHT8Udqli3oe_-VuKNHSBIkkNIMEpF7V4aK4pp3kE'
 SAFETY_OBJECT_SHEET_ID = '1RrsEqn9lmDuCC5JDQZI3cDxN5ojCZ4rEZu1cGxBuz_U'
 

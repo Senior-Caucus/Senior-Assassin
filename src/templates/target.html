@@ -4,42 +4,14 @@
 
 {% block content %}
   <div class="target-page">
-    <h2 class="nosifer-regular">TARGET: {{ target_name }}</h2>
-    <div class="target-info">
-      <p><strong>Height:</strong> {{ target_height }}</p>
-      <!-- <p><strong>Schedule:</strong></p> -->
-      <!-- schedule contains comma delimited values representing period 1, 2, 3, etc -->
-      <!-- let's make a table with period and class as the header -->
-      <table>
-        <thead>
-          <tr>
-            <th>Period</th>
-            <th>Class</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for period, class_name in target_schedule.items() %}
-            <tr>
-              <td>{{ period }}</td>
-              <td>{{ class_name }}</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-    
-    <div class="target-image">
-      <!-- picture is an io.bytesIO object -->
-      {% if target_picture %}
-        <img src="{{ target_picture }}" alt="Target Picture">
-      {% else %}
-        <p>No picture available</p>
-      {% endif %}
-    </div>
-
-    <div class="target-safety">
-      <p><b>Current Safety Object:</b> {{ today_safety }}</p>
-      <p><b>Next Safety Object (Hint):</b> {{ tmr_hint }}</p>
+    <h2 class="nosifer-regular">Select a User</h2>
+    <select id="user-select">
+      {% for user in users %}
+        <option value="{{ user.email }}">{{ user.fullName }} ({{ user.hearts|default('0') }}❤)</option>
+      {% endfor %}
+    </select>
+    <div id="user-info">
+      <!-- User info will be filled by JS -->
     </div>
 
     <button id="rules-btn">Instructions/Rules v2</button>
@@ -57,15 +29,14 @@
 
           <label for="comments">Comments:</label>
           <textarea name="comments" id="comments" rows="4" placeholder="Optional..."></textarea>
-          <!-- Hidden field with the target's email -->
-          <input type="hidden" name="target_email" value="{{ target_email }}">
+          <input type="hidden" name="target_email" id="target_email" value="">
           <input type="hidden" name="user_email" value="{{ user_email }}">
           <!-- Progress UI -->
           <div id="progress-container" class="hidden">
             <div id="upload-progress"></div>
           </div>
           <p id="upload-msg" class="upload-msg"></p>
-          <button type="submit" class="submit-btn">Submit</button>
+          <button type="submit" class="submit-btn" id="submit-evidence-btn">Submit</button>
         </form>
       </div>
     </div>
@@ -79,6 +50,11 @@
 {% endblock %}
 
 {% block scripts %}
+<script type="application/javascript">
+window.ALL_USERS = JSON.parse('{{ users|tojson|escapejs }}');
+window.EVIDENCE = JSON.parse('{{ evidence|tojson|escapejs }}');
+window.CURRENT_USER_EMAIL = "{{ user_email }}";
+</script>
 <script src="/static/js/target.js"></script>
 <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-076DG6NV1N"></script>

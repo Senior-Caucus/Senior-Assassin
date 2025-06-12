@@ -1,7 +1,7 @@
 # src/routers/admin.py
 
-from fastapi import APIRouter, Depends, HTTPException, Request
-from fastapi.responses import Response, JSONResponse
+from fastapi import APIRouter, HTTPException, Request
+from fastapi.responses import Response, JSONResponse, RedirectResponse
 # get the templates from config
 from ..config import templates
 from ..services.sheets import scan_sheet, edit_row, USERS_SHEET_ID, EVIDENCE_SHEET_ID
@@ -16,7 +16,7 @@ def admin_dashboard(request: Request):
     session_id = str(request.cookies.get("session_id"))
     row = get_row(SESSIONS_SHEET_ID, session_id)
     if not row or len(row) < 5 or (row[4] != "TRUE" and row[4] != "True"):
-        raise HTTPException(status_code=403, detail="You are not authorized to access this page.")
+        return RedirectResponse("/test")
 
     # fetch data from Google Sheets
     user_values = scan_sheet(USERS_SHEET_ID)
