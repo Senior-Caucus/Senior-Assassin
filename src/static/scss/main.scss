@@ -26,7 +26,8 @@ body, html {
 }
 
 span {
-  overflow-x: wrap;
+  max-width: 50vw;
+  overflow-wrap: anywhere;
 }
 
 .flex-row {
