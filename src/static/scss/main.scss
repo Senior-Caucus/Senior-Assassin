@@ -249,6 +249,13 @@ button#login {
     //   right: 1rem; /* Keep it on the right */
     // }
   }
+
+  #user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
   
   .target-image img {
     width: 250px;

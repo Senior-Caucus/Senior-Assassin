@@ -111,9 +111,17 @@ document.addEventListener("DOMContentLoaded", () => {
     } else {
       evidenceHtml = `<div style='margin-top:1em;'><i>No evidence submitted for this user yet.</i></div>`;
     }
+    // Responsive image size
+    let imgSize = 160;
+    if (window.innerWidth > 900) imgSize = 220;
+    else if (window.innerWidth > 600) imgSize = 180;
+    // Loading spinner
     userInfoDiv.innerHTML = `
       <h3>${user.fullName} (${user.hearts || 0}❤)</h3>
-      <img src="${user.picture}" alt="Profile Picture" style="max-width:120px;max-height:120px;border-radius:8px;" onerror="this.style.display='none'">
+      <div style="position:relative;min-height:${imgSize}px;">
+        <div id="img-loading-spinner" style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:2em;">⏳</div>
+        <img id="profile-pic" src="${user.picture}" alt="Profile Picture" style="display:none;max-width:${imgSize}px;max-height:${imgSize}px;border-radius:8px;" onerror="this.style.display='none'">
+      </div>
       <p><b>Height:</b> ${user.feet || ''}'${user.inches || ''}"</p>
       <table><thead><tr><th>Period</th><th>Class</th></tr></thead><tbody>
         ${(user.schedule||'').split(',').map(function(c,i){return `<tr><td>${i+1}</td><td>${c||'None'}</td></tr>`;}).join('')}
@@ -122,6 +130,18 @@ document.addEventListener("DOMContentLoaded", () => {
     `;
     targetEmailInput.value = user.email;
     checkEvidenceDisabled(user.email);
+    // Image loading logic
+    const img = document.getElementById('profile-pic');
+    const spinner = document.getElementById('img-loading-spinner');
+    if (img) {
+      img.onload = function() {
+        img.style.display = 'block';
+        if (spinner) spinner.style.display = 'none';
+      };
+      img.onerror = function() {
+        if (spinner) spinner.style.display = 'none';
+      };
+    }
   }
 
   function checkEvidenceDisabled(targetEmail) {

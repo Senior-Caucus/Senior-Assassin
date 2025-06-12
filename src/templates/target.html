@@ -9,13 +9,13 @@
       <b>Your Hearts:</b> {{ users | selectattr('email', 'equalto', user_email) | map(attribute='hearts') | list | first | default('0') }}❤
     </div>
     <select id="user-select">
-      {% for user in users %}
+      {% for user in users|sort(attribute='fullName') %}
         <option value="{{ user.email }}">{{ user.fullName }} ({{ user.hearts|default('0') }}❤)</option>
       {% endfor %}
     </select>
     <button id="show-user-info" style="margin-left: 1em;">Show User Info</button>
     <div id="user-info" style="margin-top:1em;"></div>
-    <button id="rules-btn">Instructions/Rules v2</button>
+    <button id="rules-btn">Instructions/Rules v3</button>
     <button id="open-evidence" class="action-btn">Submit Evidence</button>
 
     <!-- Modal Form -->
