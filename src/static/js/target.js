@@ -235,7 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let btnHtml = `<button id="dropdown-btn" aria-haspopup="listbox" aria-expanded="${dropdownOpen}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:1em;padding:0.7em 1em;background:#232323;color:#fff;border:2px solid #888;border-radius:7px;min-width:220px;cursor:pointer;">
       <span style='display:flex;align-items:center;gap:0.7em;justify-content:flex-start;text-align:left;width:100%;'>
         <span style='text-align:left;width:120px;display:inline-block;'>${selectedUser.fullName}</span>
-        <span style='display:flex;align-items:center;gap:0.1em;'>${getHeartsHtml(selectedUser.hearts, 22)}</span>
+        <span style='display:flex;align-items:center;gap:0.1em;'>${getHeartsHtml(selectedUser.hearts, 22, true)}</span>
       </span>
       <span style="font-size:1.2em;">&#9662;</span>
     </button>`;
@@ -248,7 +248,7 @@ document.addEventListener("DOMContentLoaded", () => {
             onmousedown="event.preventDefault();"
           >
             <span style='text-align:left;width:120px;display:inline-block;'>${u.fullName}</span>
-            <span style='display:flex;align-items:center;gap:0.1em;'>${getHeartsHtml(u.hearts, 20)}</span>
+            <span style='display:flex;align-items:center;gap:0.1em;'>${getHeartsHtml(u.hearts, 20, true)}</span>
           </li>`).join('')}
       </ul>`;
     }
@@ -277,21 +277,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function getHeartsHtml(hearts, size=22) {
+  function getHeartsHtml(hearts, size=22, wrap=false) {
     let n = parseFloat(hearts || '0');
-    let imgs = '';
+    let imgs = [];
     while (n >= 1 - 0.01) {
-      imgs += `<img src="/static/images/hearts/oneheart.png" alt="1 heart" style="width:${size}px;height:${size}px;vertical-align:middle;">`;
+      imgs.push(`<img src="/static/images/hearts/oneheart.png" alt="1 heart" style="width:${size}px;height:${size}px;vertical-align:middle;">`);
       n -= 1;
     }
     if (n > 0.32 && n < 0.35) {
-      imgs += `<img src="/static/images/hearts/thirdheart.png" alt="1/3 heart" style="width:${size}px;height:${size}px;vertical-align:middle;">`;
+      imgs.push(`<img src="/static/images/hearts/thirdheart.png" alt="1/3 heart" style="width:${size}px;height:${size}px;vertical-align:middle;">`);
     } else if (n > 0.65 && n < 0.7) {
-      imgs += `<img src="/static/images/hearts/twothirdheart.png" alt="2/3 heart" style="width:${size}px;height:${size}px;vertical-align:middle;">`;
+      imgs.push(`<img src="/static/images/hearts/twothirdheart.png" alt="2/3 heart" style="width:${size}px;height:${size}px;vertical-align:middle;">`);
     } else if (n > 0.99 && n < 1.01) {
-      imgs += `<img src="/static/images/hearts/oneheart.png" alt="1 heart" style="width:${size}px;height:${size}px;vertical-align:middle;">`;
+      imgs.push(`<img src="/static/images/hearts/oneheart.png" alt="1 heart" style="width:${size}px;height:${size}px;vertical-align:middle;">`);
     }
-    return imgs;
+    if (wrap) {
+      return `<div style='display:flex;flex-wrap:wrap;gap:2px;justify-content:center;max-width:320px;'>${imgs.join('')}</div>`;
+    } else {
+      return imgs.join('');
+    }
   }
 
   function onDropdownSelect(idx) {
