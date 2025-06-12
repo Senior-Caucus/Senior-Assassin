@@ -238,6 +238,120 @@ document.addEventListener("DOMContentLoaded", () => {
     renderUserInfo(userSelect.value);
   });
 
+  // --- Custom Dropdown Implementation ---
+  const dropdownContainer = document.getElementById('custom-user-dropdown');
+  let selectedUserIdx = 0;
+  let dropdownOpen = false;
+
+  function renderDropdown(selectedIdx = 0) {
+    selectedUserIdx = selectedIdx;
+    const selectedUser = ALL_USERS[selectedUserIdx];
+    // Button (shows selected user)
+    let btnHtml = `<button id="dropdown-btn" aria-haspopup="listbox" aria-expanded="${dropdownOpen}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:1em;padding:0.7em 1em;background:#232323;color:#fff;border:2px solid #888;border-radius:7px;min-width:220px;cursor:pointer;">
+      <span style='display:flex;align-items:center;gap:0.7em;'>
+        <span>${selectedUser.fullName}</span>
+        <span style='display:flex;align-items:center;gap:0.1em;'>${getHeartsHtml(selectedUser.hearts, 22)}</span>
+        <span style='font-size:1em;color:#bbb;'>(${selectedUser.hearts})</span>
+      </span>
+      <span style="font-size:1.2em;">&#9662;</span>
+    </button>`;
+    // Options list
+    let optionsHtml = '';
+    if (dropdownOpen) {
+      optionsHtml = `<ul id="dropdown-list" tabindex="-1" role="listbox" aria-activedescendant="dropdown-opt-${selectedUserIdx}" style="position:absolute;top:110%;left:0;width:100%;background:#232323;border:2px solid #888;border-radius:7px;z-index:20;max-height:260px;overflow-y:auto;box-shadow:0 4px 16px #000a;list-style:none;padding:0;margin:0;">
+        ${ALL_USERS.map((u,i) => `
+          <li id="dropdown-opt-${i}" role="option" aria-selected="${i===selectedUserIdx}" data-idx="${i}" tabindex="-1" style="padding:0.7em 1em;display:flex;align-items:center;gap:0.7em;cursor:pointer;background:${i===selectedUserIdx?'#333':'none'};color:#fff;">
+            <span>${u.fullName}</span>
+            <span style='display:flex;align-items:center;gap:0.1em;'>${getHeartsHtml(u.hearts, 20)}</span>
+            <span style='font-size:1em;color:#bbb;'>(${u.hearts})</span>
+          </li>`).join('')}
+      </ul>`;
+    }
+    dropdownContainer.innerHTML = `<div style="position:relative;">${btnHtml}${optionsHtml}</div>`;
+    // Attach events
+    document.getElementById('dropdown-btn').onclick = (e) => {
+      dropdownOpen = !dropdownOpen;
+      renderDropdown(selectedUserIdx);
+      if (dropdownOpen) {
+        setTimeout(() => {
+          const list = document.getElementById('dropdown-list');
+          if (list) list.focus();
+        }, 0);
+      }
+    };
+    if (dropdownOpen) {
+      const list = document.getElementById('dropdown-list');
+      list.onblur = () => { dropdownOpen = false; renderDropdown(selectedUserIdx); };
+      list.onkeydown = (e) => handleDropdownKey(e);
+      Array.from(list.children).forEach(li => {
+        li.onclick = (ev) => {
+          const idx = parseInt(li.getAttribute('data-idx'));
+          dropdownOpen = false;
+          renderDropdown(idx);
+          onDropdownSelect(idx);
+        };
+      });
+    }
+  }
+
+  function getHeartsHtml(hearts, size=22) {
+    let n = parseFloat(hearts || '0');
+    let imgs = '';
+    while (n >= 1) {
+      imgs += `<img src="/static/images/hearts/oneheart.png" alt="1 heart" style="width:${size}px;height:${size}px;vertical-align:middle;">`;
+      n -= 1;
+    }
+    if (Math.abs(n - 2/3) < 0.01) {
+      imgs += `<img src="/static/images/hearts/twothirdheart.png" alt="2/3 heart" style="width:${size}px;height:${size}px;vertical-align:middle;">`;
+    } else if (Math.abs(n - 1/3) < 0.01) {
+      imgs += `<img src="/static/images/hearts/thirdheart.png" alt="1/3 heart" style="width:${size}px;height:${size}px;vertical-align:middle;">`;
+    }
+    return imgs;
+  }
+
+  function handleDropdownKey(e) {
+    const max = ALL_USERS.length - 1;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      selectedUserIdx = Math.min(selectedUserIdx + 1, max);
+      renderDropdown(selectedUserIdx);
+      document.getElementById(`dropdown-opt-${selectedUserIdx}`).scrollIntoView({block:'nearest'});
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      selectedUserIdx = Math.max(selectedUserIdx - 1, 0);
+      renderDropdown(selectedUserIdx);
+      document.getElementById(`dropdown-opt-${selectedUserIdx}`).scrollIntoView({block:'nearest'});
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      dropdownOpen = false;
+      renderDropdown(selectedUserIdx);
+      onDropdownSelect(selectedUserIdx);
+    } else if (e.key === 'Escape') {
+      dropdownOpen = false;
+      renderDropdown(selectedUserIdx);
+    }
+  }
+
+  function onDropdownSelect(idx) {
+    selectedUserIdx = idx;
+    // Update hearts display
+    const user = ALL_USERS[idx];
+    renderHearts(document.getElementById('dropdown-hearts'), user.hearts);
+    document.getElementById('dropdown-hearts-num').textContent = `(${user.hearts})`;
+    // Set for evidence modal
+    if (targetEmailInput) targetEmailInput.value = user.email;
+  }
+
+  // Initial render
+  renderDropdown(0);
+  onDropdownSelect(0);
+
+  document.getElementById('show-user-info').onclick = function() {
+    renderUserInfo(ALL_USERS[selectedUserIdx].email);
+  };
+
+  if (userSelect) userSelect.style.display = 'none';
+
   // Loader CSS
   const style = document.createElement('style');
   style.innerHTML = `.loader-circle { border: 4px solid #fff; border-top: 4px solid rgba(255,255,255,0.2); border-radius: 50%; width: 36px; height: 36px; animation: spin 1s linear infinite; }
