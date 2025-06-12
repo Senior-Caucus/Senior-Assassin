@@ -321,18 +321,25 @@ document.addEventListener("DOMContentLoaded", () => {
       sharedClassUsersDiv.innerHTML = "<i>None</i>";
       return;
     }
-
-    const sharedUsers = ALL_USERS.filter(user => {
-      if (user.email === CURRENT_USER_EMAIL || !user.schedule) return false;
-      const userClasses = user.schedule.split(",").map(c => c.trim());
-      const currentUserClasses = currentUser.schedule.split(",").map(c => c.trim());
-      return userClasses.some(c => currentUserClasses.includes(c));
-    });
-
+    const currentUserClasses = currentUser.schedule.split(",").map(c => c.trim()).filter(Boolean);
+    const sharedUsers = ALL_USERS
+      .filter(user => {
+        if (user.email === CURRENT_USER_EMAIL || !user.schedule) return false;
+        if (parseFloat(user.hearts || '0') <= 0) return false;
+        const userClasses = user.schedule.split(",").map(c => c.trim()).filter(Boolean);
+        // Find first shared class
+        const shared = userClasses.find(c => currentUserClasses.includes(c));
+        return !!shared;
+      })
+      .map(user => {
+        const userClasses = user.schedule.split(",").map(c => c.trim()).filter(Boolean);
+        const sharedClass = userClasses.find(c => currentUserClasses.includes(c));
+        return `<div>${user.fullName} <span style='color:#aaa;'>( ${sharedClass})</span></div>`;
+      });
     if (sharedUsers.length === 0) {
       sharedClassUsersDiv.innerHTML = "<i>None</i>";
     } else {
-      sharedClassUsersDiv.innerHTML = sharedUsers.map(user => `<div>${user.fullName}</div>`).join("");
+      sharedClassUsersDiv.innerHTML = sharedUsers.join("");
     }
   }
 
