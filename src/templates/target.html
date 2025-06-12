@@ -13,11 +13,8 @@
     </div>
     <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
       <div id="user-select-wrapper" style="display: flex; align-items: center; gap: 0.5em;">
-        <select id="user-select" style="max-width: 350px; margin: 0 auto;">
-          {% for user in users|sort(attribute='fullName') %}
-            <option value="{{ user.email }}" data-hearts="{{ user.hearts|default('0') }}">{{ user.fullName }}</option>
-          {% endfor %}
-        </select>
+        <!-- Custom dropdown will be rendered here by JS -->
+        <div id="custom-user-dropdown" tabindex="0" style="position: relative; min-width: 250px;"></div>
         <span id="dropdown-hearts" style="display: flex; align-items: center; gap: 0.1em;"></span>
         <span id="dropdown-hearts-num"></span>
       </div>
