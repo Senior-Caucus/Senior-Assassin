@@ -61,7 +61,7 @@ async def submit_evidence(
         str(int(time.time())),  # timestamp
     ]
     append_row(EVIDENCE_SHEET_ID, new_row)
-    
+
     # 5) Update hearts for both users
     from ..services.sheets import scan_sheet, edit_row
     user_rows = scan_sheet(USERS_SHEET_ID) or []
@@ -83,8 +83,12 @@ async def submit_evidence(
             except Exception:
                 target_hearts = 0.0
             # Assassin gain logic
-            if assassin_hearts in [0, 1/3, 2/3]:
-                assassin_hearts += 1/3
+            if abs(assassin_hearts - 0) <= 0.1:  # Around 0
+                assassin_hearts = 1/3
+            elif abs(assassin_hearts - 1/3) <= 0.1:  # Around 1/3
+                assassin_hearts = 2/3
+            elif abs(assassin_hearts - 2/3) <= 0.1:  # Around 2/3
+                assassin_hearts = 1
             else:
                 assassin_hearts += 1
             # Target loses a heart
