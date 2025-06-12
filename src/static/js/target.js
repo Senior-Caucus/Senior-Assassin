@@ -247,7 +247,7 @@ document.addEventListener("DOMContentLoaded", () => {
     selectedUserIdx = selectedIdx;
     const selectedUser = ALL_USERS[selectedUserIdx];
     // Button (shows selected user)
-    let btnHtml = `<button id="dropdown-btn" aria-haspopup="listbox" aria-expanded="${dropdownOpen}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:1em;padding:0.7em 1em;background:#232323;color:#fff;border:2px solid #888;border-radius:7px;min-width:220px;cursor:pointer;">
+    let btnHtml = `<button id="dropdown-btn" aria-haspopup="listbox" aria-expanded="${dropdownOpen}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:1em;padding:0.7em 1em;background:#232323;color:#fff;border:2px solid #888;border-radius:7px;min-width:220px;cursor:pointer;" type="button">
       <span style='display:flex;align-items:center;gap:0.7em;'>
         <span>${selectedUser.fullName}</span>
         <span style='display:flex;align-items:center;gap:0.1em;'>${getHeartsHtml(selectedUser.hearts, 22)}</span>
@@ -258,9 +258,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // Options list
     let optionsHtml = '';
     if (dropdownOpen) {
-      optionsHtml = `<ul id="dropdown-list" tabindex="-1" role="listbox" aria-activedescendant="dropdown-opt-${selectedUserIdx}" style="position:absolute;top:110%;left:0;width:100%;background:#232323;border:2px solid #888;border-radius:7px;z-index:20;max-height:260px;overflow-y:auto;box-shadow:0 4px 16px #000a;list-style:none;padding:0;margin:0;">
+      optionsHtml = `<ul id="dropdown-list" tabindex="0" role="listbox" aria-activedescendant="dropdown-opt-${selectedUserIdx}" style="position:absolute;top:110%;left:0;width:100%;background:#232323;border:2px solid #888;border-radius:7px;z-index:20;max-height:260px;overflow-y:auto;box-shadow:0 4px 16px #000a;list-style:none;padding:0;margin:0;">
         ${ALL_USERS.map((u,i) => `
-          <li id="dropdown-opt-${i}" role="option" aria-selected="${i===selectedUserIdx}" data-idx="${i}" tabindex="-1" style="padding:0.7em 1em;display:flex;align-items:center;gap:0.7em;cursor:pointer;background:${i===selectedUserIdx?'#333':'none'};color:#fff;">
+          <li id="dropdown-opt-${i}" role="option" aria-selected="${i===selectedUserIdx}" data-idx="${i}" tabindex="0" style="padding:0.7em 1em;display:flex;align-items:center;gap:0.7em;cursor:pointer;background:${i===selectedUserIdx?'#333':'none'};color:#fff;">
             <span>${u.fullName}</span>
             <span style='display:flex;align-items:center;gap:0.1em;'>${getHeartsHtml(u.hearts, 20)}</span>
             <span style='font-size:1em;color:#bbb;'>(${u.hearts})</span>
@@ -289,6 +289,15 @@ document.addEventListener("DOMContentLoaded", () => {
           dropdownOpen = false;
           renderDropdown(idx);
           onDropdownSelect(idx);
+        };
+        li.onkeydown = (ev) => {
+          if (ev.key === 'Enter' || ev.key === ' ') {
+            ev.preventDefault();
+            const idx = parseInt(li.getAttribute('data-idx'));
+            dropdownOpen = false;
+            renderDropdown(idx);
+            onDropdownSelect(idx);
+          }
         };
       });
     }
