@@ -25,6 +25,10 @@ body, html {
   overflow: hidden;
 }
 
+span {
+  overflow-x: wrap;
+}
+
 .flex-row {
   display: flex;
   flex-direction: row;
