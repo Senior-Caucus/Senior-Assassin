@@ -24,6 +24,52 @@ document.addEventListener("DOMContentLoaded", () => {
   const targetEmailInput = document.getElementById("target_email");
   const showUserInfoBtn = document.getElementById("show-user-info");
 
+  // Utility: render hearts as images
+  function renderHearts(container, hearts) {
+    container.innerHTML = '';
+    let n = parseFloat(hearts || '0');
+    let imgs = [];
+    while (n >= 1) {
+      imgs.push(`<img src="/static/images/hearts/oneheart.png" alt="1 heart" style="width:28px;height:28px;vertical-align:middle;">`);
+      n -= 1;
+    }
+    if (Math.abs(n - 2/3) < 0.01) {
+      imgs.push(`<img src="/static/images/hearts/twothirdheart.png" alt="2/3 heart" style="width:28px;height:28px;vertical-align:middle;">`);
+    } else if (Math.abs(n - 1/3) < 0.01) {
+      imgs.push(`<img src="/static/images/hearts/thirdheart.png" alt="1/3 heart" style="width:28px;height:28px;vertical-align:middle;">`);
+    }
+    container.innerHTML = imgs.join('');
+  }
+
+  // Show current user's hearts
+  function showMyHearts() {
+    const me = ALL_USERS.find(u => u.email === CURRENT_USER_EMAIL);
+    const myHearts = me ? me.hearts : '0';
+    renderHearts(document.getElementById('my-hearts'), myHearts);
+    document.getElementById('my-hearts-num').textContent = `(${myHearts})`;
+  }
+
+  // Show dropdown user's hearts
+  function showDropdownHearts() {
+    const sel = userSelect.options[userSelect.selectedIndex];
+    const hearts = sel.getAttribute('data-hearts') || '0';
+    renderHearts(document.getElementById('dropdown-hearts'), hearts);
+    document.getElementById('dropdown-hearts-num').textContent = `(${hearts})`;
+  }
+
+  userSelect.addEventListener('change', showDropdownHearts);
+  showDropdownHearts();
+  showMyHearts();
+
+  // Remove auto-render on select change
+  // When opening modal, set target_email
+  openBtn?.addEventListener("click", function() {
+    targetEmailInput.value = userSelect.value;
+    checkEvidenceDisabled(userSelect.value);
+    modal.classList.remove("hidden");
+  });
+
+  // --- user info rendering ---
   function renderUserInfo(email) {
     const user = ALL_USERS.find((u) => u.email === email);
     if (!user) return;
@@ -68,9 +114,23 @@ document.addEventListener("DOMContentLoaded", () => {
         </form>
       `;
     }
+    // Hearts row in user info
+    let heartsHtml = `<div style='display:flex;align-items:center;justify-content:center;gap:0.2em;margin-bottom:0.5em;'>`;
+    let n = hearts;
+    while (n >= 1) {
+      heartsHtml += `<img src="/static/images/hearts/oneheart.png" alt="1 heart" style="width:32px;height:32px;vertical-align:middle;">`;
+      n -= 1;
+    }
+    if (Math.abs(n - 2/3) < 0.01) {
+      heartsHtml += `<img src="/static/images/hearts/twothirdheart.png" alt="2/3 heart" style="width:32px;height:32px;vertical-align:middle;">`;
+    } else if (Math.abs(n - 1/3) < 0.01) {
+      heartsHtml += `<img src="/static/images/hearts/thirdheart.png" alt="1/3 heart" style="width:32px;height:32px;vertical-align:middle;">`;
+    }
+    heartsHtml += `<span style='margin-left:0.4em;font-size:1.1em;'>(${user.hearts || 0})</span></div>`;
     userInfoDiv.innerHTML = `
       <div style="display:flex;flex-direction:column;align-items:center;">
-        <h3 style="margin-bottom:0.5em;">${user.fullName} (${user.hearts || 0}❤)</h3>
+        <h3 style="margin-bottom:0.5em;">${user.fullName}</h3>
+        ${heartsHtml}
         <div style="position:relative;min-height:${imgSize}px;margin-bottom:1em;">
           ${spinnerHtml}
           <img id="profile-pic" src="${user.picture}" alt="Profile Picture" style="display:none;max-width:${imgSize}px;max-height:${imgSize}px;border-radius:8px;box-shadow:0 0 12px #000;" onerror="this.style.display='none'">
@@ -178,13 +238,11 @@ document.addEventListener("DOMContentLoaded", () => {
     renderUserInfo(userSelect.value);
   });
 
-  // Remove auto-render on select change
-  // When opening modal, set target_email
-  openBtn?.addEventListener("click", function() {
-    targetEmailInput.value = userSelect.value;
-    checkEvidenceDisabled(userSelect.value);
-    modal.classList.remove("hidden");
-  });
+  // Loader CSS
+  const style = document.createElement('style');
+  style.innerHTML = `.loader-circle { border: 4px solid #fff; border-top: 4px solid rgba(255,255,255,0.2); border-radius: 50%; width: 36px; height: 36px; animation: spin 1s linear infinite; }
+  @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }`;
+  document.head.appendChild(style);
 });
 
 // Loader CSS

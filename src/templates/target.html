@@ -4,17 +4,23 @@
 
 {% block content %}
   <div class="target-page">
-    <h2 class="nosifer-regular">Eliminate Any User</h2>
+    <h2 class="nosifer-regular">Eliminate Anyone</h2>
     <button id="rules-btn">Instructions/Rules v3</button>
-    <div style="margin-bottom: 1em; font-size: 1.2em;">
-      <b>Your Hearts:</b> {{ users | selectattr('email', 'equalto', user_email) | map(attribute='hearts') | list | first | default('0') }}❤
+    <div style="margin-bottom: 1em; font-size: 1.2em; display: flex; align-items: center; justify-content: center; gap: 0.5em;">
+      <b>Your Hearts:</b>
+      <span id="my-hearts" style="display: flex; align-items: center; gap: 0.15em;"></span>
+      <span id="my-hearts-num"></span>
     </div>
     <div style="display: flex; flex-direction: column; align-items: center; width: 100%;">
-      <select id="user-select" style="max-width: 350px; margin: 0 auto;">
-        {% for user in users|sort(attribute='fullName') %}
-          <option value="{{ user.email }}">{{ user.fullName }} ({{ user.hearts|default('0') }}❤)</option>
-        {% endfor %}
-      </select>
+      <div id="user-select-wrapper" style="display: flex; align-items: center; gap: 0.5em;">
+        <select id="user-select" style="max-width: 350px; margin: 0 auto;">
+          {% for user in users|sort(attribute='fullName') %}
+            <option value="{{ user.email }}" data-hearts="{{ user.hearts|default('0') }}">{{ user.fullName }}</option>
+          {% endfor %}
+        </select>
+        <span id="dropdown-hearts" style="display: flex; align-items: center; gap: 0.1em;"></span>
+        <span id="dropdown-hearts-num"></span>
+      </div>
       <button id="show-user-info" style="margin: 1em auto 0 auto;">Show User Info</button>
     </div>
     <div id="user-info" style="margin-top:1em; display: flex; flex-direction: column; align-items: center;"></div>
@@ -33,6 +39,11 @@
 var ALL_USERS = JSON.parse(`{{ users|tojson|safe }}`);
 var EVIDENCE = JSON.parse(`{{ evidence|tojson|safe }}`);
 var CURRENT_USER_EMAIL = "{{ user_email }}";
+var HEART_IMG_PATHS = {
+  '1': '/static/images/hearts/oneheart.png',
+  '1/3': '/static/images/hearts/thirdheart.png',
+  '2/3': '/static/images/hearts/twothirdheart.png'
+};
 </script>
 <script src="/static/js/target.js"></script>
 <!-- Google tag (gtag.js) -->
