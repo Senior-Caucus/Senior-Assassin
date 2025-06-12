@@ -5,17 +5,17 @@
 {% block content %}
   <div class="target-page">
     <h2 class="nosifer-regular">Select a User</h2>
+    <div style="margin-bottom: 1em; font-size: 1.2em;">
+      <b>Your Hearts:</b> {{ users | selectattr('email', 'equalto', user_email) | map(attribute='hearts') | list | first | default('0') }}❤
+    </div>
     <select id="user-select">
       {% for user in users %}
         <option value="{{ user.email }}">{{ user.fullName }} ({{ user.hearts|default('0') }}❤)</option>
       {% endfor %}
     </select>
-    <div id="user-info">
-      <!-- User info will be filled by JS -->
-    </div>
-
+    <button id="show-user-info" style="margin-left: 1em;">Show User Info</button>
+    <div id="user-info" style="margin-top:1em;"></div>
     <button id="rules-btn">Instructions/Rules v2</button>
-
     <button id="open-evidence" class="action-btn">Submit Evidence</button>
 
     <!-- Modal Form -->

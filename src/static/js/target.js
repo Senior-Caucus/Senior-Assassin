@@ -94,19 +94,34 @@ document.addEventListener("DOMContentLoaded", () => {
   const userInfoDiv = document.getElementById("user-info");
   const submitBtn = document.getElementById("submit-evidence-btn");
   const targetEmailInput = document.getElementById("target_email");
+  const showUserInfoBtn = document.getElementById("show-user-info");
 
   function renderUserInfo(email) {
     const user = ALL_USERS.find((u) => u.email === email);
     if (!user) return;
+    // Find all evidence for this user
+    const evidenceList = EVIDENCE.filter(e => e.target === email);
+    let evidenceHtml = "";
+    if (evidenceList.length > 0) {
+      evidenceHtml = `<div style='margin-top:1em;'><b>Evidence submitted for this user:</b><ul>` +
+        evidenceList.map(function(e) {
+          return `<li>By: ${e.assassin}${e.comments ? ' (Comment: ' + e.comments + ')' : ''}</li>`;
+        }).join('') +
+        `</ul></div>`;
+    } else {
+      evidenceHtml = `<div style='margin-top:1em;'><i>No evidence submitted for this user yet.</i></div>`;
+    }
     userInfoDiv.innerHTML = `
       <h3>${user.fullName} (${user.hearts || 0}❤)</h3>
       <img src="${user.picture}" alt="Profile Picture" style="max-width:120px;max-height:120px;border-radius:8px;" onerror="this.style.display='none'">
       <p><b>Height:</b> ${user.feet || ''}'${user.inches || ''}"</p>
       <table><thead><tr><th>Period</th><th>Class</th></tr></thead><tbody>
-        ${(user.schedule||'').split(',').map((c,i)=>`<tr><td>${i+1}</td><td>${c||'None'}</td></tr>`).join('')}
+        ${(user.schedule||'').split(',').map(function(c,i){return `<tr><td>${i+1}</td><td>${c||'None'}</td></tr>`;}).join('')}
       </tbody></table>
+      ${evidenceHtml}
     `;
     targetEmailInput.value = user.email;
+    checkEvidenceDisabled(user.email);
   }
 
   function checkEvidenceDisabled(targetEmail) {
@@ -118,19 +133,13 @@ document.addEventListener("DOMContentLoaded", () => {
     return already;
   }
 
-  userSelect.addEventListener("change", (e) => {
-    const email = e.target.value;
-    renderUserInfo(email);
-    checkEvidenceDisabled(email);
+  showUserInfoBtn.addEventListener("click", function() {
+    renderUserInfo(userSelect.value);
   });
 
-  // Initial render
-  if (userSelect.value) {
-    renderUserInfo(userSelect.value);
-    checkEvidenceDisabled(userSelect.value);
-  }
+  // Remove auto-render on select change
   // When opening modal, set target_email
-  openBtn?.addEventListener("click", () => {
+  openBtn?.addEventListener("click", function() {
     targetEmailInput.value = userSelect.value;
     checkEvidenceDisabled(userSelect.value);
     modal.classList.remove("hidden");
