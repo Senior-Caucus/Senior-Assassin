@@ -321,20 +321,32 @@ document.addEventListener("DOMContentLoaded", () => {
       sharedClassUsersDiv.innerHTML = "<i>None</i>";
       return;
     }
-    const currentUserClasses = currentUser.schedule.split(",").map(c => c.trim()).filter(Boolean);
+    const currentUserClasses = currentUser.schedule.split(",").map(c => c.trim());
     const sharedUsers = ALL_USERS
       .filter(user => {
         if (user.email === CURRENT_USER_EMAIL || !user.schedule) return false;
         if (parseFloat(user.hearts || '0') <= 0) return false;
-        const userClasses = user.schedule.split(",").map(c => c.trim()).filter(Boolean);
-        // Find first shared class
-        const shared = userClasses.find(c => currentUserClasses.includes(c));
-        return !!shared;
+        const userClasses = user.schedule.split(",").map(c => c.trim());
+        // Find first shared period/class (must match both period and class)
+        for (let i = 0; i < Math.min(currentUserClasses.length, userClasses.length); i++) {
+          if (currentUserClasses[i] && userClasses[i] && currentUserClasses[i] === userClasses[i]) {
+            return true;
+          }
+        }
+        return false;
       })
       .map(user => {
-        const userClasses = user.schedule.split(",").map(c => c.trim()).filter(Boolean);
-        const sharedClass = userClasses.find(c => currentUserClasses.includes(c));
-        return `<div>${user.fullName} <span style='color:#aaa;'>( ${sharedClass})</span></div>`;
+        const userClasses = user.schedule.split(",").map(c => c.trim());
+        let sharedPeriod = null;
+        let sharedClass = null;
+        for (let i = 0; i < Math.min(currentUserClasses.length, userClasses.length); i++) {
+          if (currentUserClasses[i] && userClasses[i] && currentUserClasses[i] === userClasses[i]) {
+            sharedPeriod = i + 1;
+            sharedClass = currentUserClasses[i];
+            break;
+          }
+        }
+        return `<div>${user.fullName} <span style='color:#aaa;'>(Period ${sharedPeriod}: ${sharedClass})</span></div>`;
       });
     if (sharedUsers.length === 0) {
       sharedClassUsersDiv.innerHTML = "<i>None</i>";
