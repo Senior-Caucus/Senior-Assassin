@@ -103,7 +103,7 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
     }
     // Hearts row in user info
-    let heartsHtml = `<div style='display:flex;align-items:center;justify-content:center;gap:0.2em;margin-bottom:0.5em;'>`;
+    let heartsHtml = `<div style='display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:0.2em;margin-bottom:0.5em;max-width:320px;'>`;
     let n = hearts;
     while (n >= 1) {
       heartsHtml += `<img src="/static/images/hearts/oneheart.png" alt="1 heart" style="width:32px;height:32px;vertical-align:middle;">`;
