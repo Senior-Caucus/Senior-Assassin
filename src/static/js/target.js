@@ -223,7 +223,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Custom Dropdown Implementation ---
   const dropdownContainer = document.getElementById('custom-user-dropdown');
-  // Sort users alphabetically by fullName (case-insensitive)
   const SORTED_USERS = [...ALL_USERS].sort((a, b) => a.fullName.toLowerCase().localeCompare(b.fullName.toLowerCase()));
   let selectedUserIdx = 0;
   let dropdownOpen = false;
@@ -236,7 +235,6 @@ document.addEventListener("DOMContentLoaded", () => {
       <span style='display:flex;align-items:center;gap:0.7em;justify-content:flex-start;text-align:left;width:100%;'>
         <span style='text-align:left;width:120px;display:inline-block;'>${selectedUser.fullName}</span>
         <span style='display:flex;align-items:center;gap:0.1em;'>${getHeartsHtml(selectedUser.hearts, 22)}</span>
-        <span style='font-size:1em;color:#bbb;'>(${selectedUser.hearts})</span>
       </span>
       <span style="font-size:1.2em;">&#9662;</span>
     </button>`;
@@ -245,10 +243,11 @@ document.addEventListener("DOMContentLoaded", () => {
     if (dropdownOpen) {
       optionsHtml = `<ul id="dropdown-list" tabindex="-1" role="listbox" aria-activedescendant="dropdown-opt-${selectedUserIdx}" style="position:absolute;top:110%;left:0;width:100%;background:#232323;border:2px solid #888;border-radius:7px;z-index:20;max-height:260px;overflow-y:auto;box-shadow:0 4px 16px #000a;list-style:none;padding:0;margin:0;">
         ${SORTED_USERS.map((u,i) => `
-          <li id="dropdown-opt-${i}" role="option" aria-selected="${i===selectedUserIdx}" data-idx="${i}" tabindex="-1" style="padding:0.7em 1em;display:flex;align-items:center;gap:0.7em;cursor:pointer;background:${i===selectedUserIdx?'#333':'none'};color:#fff;justify-content:flex-start;text-align:left;">
+          <li id="dropdown-opt-${i}" role="option" aria-selected="${i===selectedUserIdx}" data-idx="${i}" tabindex="0" style="padding:0.7em 1em;display:flex;align-items:center;gap:0.7em;cursor:pointer;background:${i===selectedUserIdx?'#333':'none'};color:#fff;justify-content:flex-start;text-align:left;"
+            onmousedown="event.preventDefault();"
+          >
             <span style='text-align:left;width:120px;display:inline-block;'>${u.fullName}</span>
             <span style='display:flex;align-items:center;gap:0.1em;'>${getHeartsHtml(u.hearts, 20)}</span>
-            <span style='font-size:1em;color:#bbb;'>(${u.hearts})</span>
           </li>`).join('')}
       </ul>`;
     }
@@ -266,8 +265,6 @@ document.addEventListener("DOMContentLoaded", () => {
     };
     if (dropdownOpen) {
       const list = document.getElementById('dropdown-list');
-      list.onblur = () => { dropdownOpen = false; renderDropdown(selectedUserIdx); };
-      list.onkeydown = (e) => handleDropdownKey(e);
       Array.from(list.children).forEach(li => {
         li.onclick = (ev) => {
           const idx = parseInt(li.getAttribute('data-idx'));
@@ -282,12 +279,10 @@ document.addEventListener("DOMContentLoaded", () => {
   function getHeartsHtml(hearts, size=22) {
     let n = parseFloat(hearts || '0');
     let imgs = '';
-    // Only show full hearts if n >= 1
-    while (n >= 1 - 0.01) { // allow for float imprecision
+    while (n >= 1 - 0.01) {
       imgs += `<img src="/static/images/hearts/oneheart.png" alt="1 heart" style="width:${size}px;height:${size}px;vertical-align:middle;">`;
       n -= 1;
     }
-    // Show 2/3 or 1/3 heart if needed
     if (n > 0.32 && n < 0.35) {
       imgs += `<img src="/static/images/hearts/thirdheart.png" alt="1/3 heart" style="width:${size}px;height:${size}px;vertical-align:middle;">`;
     } else if (n > 0.65 && n < 0.7) {
@@ -298,35 +293,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return imgs;
   }
 
-  function handleDropdownKey(e) {
-    const max = SORTED_USERS.length - 1;
-    if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      selectedUserIdx = Math.min(selectedUserIdx + 1, max);
-      renderDropdown(selectedUserIdx);
-      document.getElementById(`dropdown-opt-${selectedUserIdx}`).scrollIntoView({block:'nearest'});
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      selectedUserIdx = Math.max(selectedUserIdx - 1, 0);
-      renderDropdown(selectedUserIdx);
-      document.getElementById(`dropdown-opt-${selectedUserIdx}`).scrollIntoView({block:'nearest'});
-    } else if (e.key === 'Enter' || e.key === ' ') {
-      e.preventDefault();
-      dropdownOpen = false;
-      renderDropdown(selectedUserIdx);
-      onDropdownSelect(selectedUserIdx);
-    } else if (e.key === 'Escape') {
-      dropdownOpen = false;
-      renderDropdown(selectedUserIdx);
-    }
-  }
-
   function onDropdownSelect(idx) {
     selectedUserIdx = idx;
     // Update hearts display
     const user = SORTED_USERS[idx];
     renderHearts(document.getElementById('dropdown-hearts'), user.hearts);
-    document.getElementById('dropdown-hearts-num').textContent = `(${user.hearts})`;
     // Set for evidence modal
     if (targetEmailInput) targetEmailInput.value = user.email;
   }
