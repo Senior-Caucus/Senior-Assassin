@@ -96,7 +96,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const targetEmailInput = document.getElementById("target_email");
 
   function renderUserInfo(email) {
-    const user = window.ALL_USERS.find((u) => u.email === email);
+    const user = ALL_USERS.find((u) => u.email === email);
     if (!user) return;
     userInfoDiv.innerHTML = `
       <h3>${user.fullName} (${user.hearts || 0}❤)</h3>
@@ -110,8 +110,8 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function checkEvidenceDisabled(targetEmail) {
-    const already = window.EVIDENCE.some(
-      (e) => e.assassin === window.CURRENT_USER_EMAIL && e.target === targetEmail
+    const already = EVIDENCE.some(
+      (e) => e.assassin === CURRENT_USER_EMAIL && e.target === targetEmail
     );
     submitBtn.disabled = already;
     submitBtn.textContent = already ? "Already Submitted" : "Submit";

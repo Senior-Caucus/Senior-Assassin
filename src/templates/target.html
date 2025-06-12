@@ -51,9 +51,10 @@
 
 {% block scripts %}
 <script type="application/javascript">
-window.ALL_USERS = JSON.parse('{{ users|tojson|escapejs }}');
-window.EVIDENCE = JSON.parse('{{ evidence|tojson|escapejs }}');
-window.CURRENT_USER_EMAIL = "{{ user_email }}";
+// Safely inject JSON using backticks for template literals
+var ALL_USERS = JSON.parse(`{{ users|tojson|safe }}`);
+var EVIDENCE = JSON.parse(`{{ evidence|tojson|safe }}`);
+var CURRENT_USER_EMAIL = "{{ user_email }}";
 </script>
 <script src="/static/js/target.js"></script>
 <!-- Google tag (gtag.js) -->
