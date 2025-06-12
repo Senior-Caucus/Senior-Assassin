@@ -5,6 +5,7 @@
 {% block content %}
   <div class="target-page">
     <h2 class="nosifer-regular">Select a User</h2>
+    <button id="rules-btn">Instructions/Rules v3</button>
     <div style="margin-bottom: 1em; font-size: 1.2em;">
       <b>Your Hearts:</b> {{ users | selectattr('email', 'equalto', user_email) | map(attribute='hearts') | list | first | default('0') }}❤
     </div>
@@ -15,31 +16,6 @@
     </select>
     <button id="show-user-info" style="margin-left: 1em;">Show User Info</button>
     <div id="user-info" style="margin-top:1em;"></div>
-    <button id="rules-btn">Instructions/Rules v3</button>
-    <button id="open-evidence" class="action-btn">Submit Evidence</button>
-
-    <!-- Modal Form -->
-    <div id="evidence-modal" class="modal hidden">
-      <div class="modal-content">
-        <button class="close-btn">&times;</button>
-        <h3>Submit Evidence</h3>
-        <form id="evidence-form" method="post" enctype="multipart/form-data">
-          <label for="video">Video Evidence (max 25MB):</label>
-          <input type="file" name="video" id="video" accept="video/*" required>
-
-          <label for="comments">Comments:</label>
-          <textarea name="comments" id="comments" rows="4" placeholder="Optional..."></textarea>
-          <input type="hidden" name="target_email" id="target_email" value="">
-          <input type="hidden" name="user_email" value="{{ user_email }}">
-          <!-- Progress UI -->
-          <div id="progress-container" class="hidden">
-            <div id="upload-progress"></div>
-          </div>
-          <p id="upload-msg" class="upload-msg"></p>
-          <button type="submit" class="submit-btn" id="submit-evidence-btn">Submit</button>
-        </form>
-      </div>
-    </div>
   </div>
 
   <div id="target-profile-pic-reroute">
