@@ -227,16 +227,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- Custom Dropdown Implementation ---
   const dropdownContainer = document.getElementById('custom-user-dropdown');
+  // Sort users alphabetically by fullName (case-insensitive)
+  const SORTED_USERS = [...ALL_USERS].sort((a, b) => a.fullName.toLowerCase().localeCompare(b.fullName.toLowerCase()));
   let selectedUserIdx = 0;
   let dropdownOpen = false;
 
   function renderDropdown(selectedIdx = 0) {
     selectedUserIdx = selectedIdx;
-    const selectedUser = ALL_USERS[selectedUserIdx];
+    const selectedUser = SORTED_USERS[selectedUserIdx];
     // Button (shows selected user)
     let btnHtml = `<button id="dropdown-btn" aria-haspopup="listbox" aria-expanded="${dropdownOpen}" style="width:100%;display:flex;align-items:center;justify-content:space-between;gap:1em;padding:0.7em 1em;background:#232323;color:#fff;border:2px solid #888;border-radius:7px;min-width:220px;cursor:pointer;">
-      <span style='display:flex;align-items:center;gap:0.7em;'>
-        <span>${selectedUser.fullName}</span>
+      <span style='display:flex;align-items:center;gap:0.7em;justify-content:flex-start;text-align:left;width:100%;'>
+        <span style='text-align:left;width:120px;display:inline-block;'>${selectedUser.fullName}</span>
         <span style='display:flex;align-items:center;gap:0.1em;'>${getHeartsHtml(selectedUser.hearts, 22)}</span>
         <span style='font-size:1em;color:#bbb;'>(${selectedUser.hearts})</span>
       </span>
@@ -246,9 +248,9 @@ document.addEventListener("DOMContentLoaded", () => {
     let optionsHtml = '';
     if (dropdownOpen) {
       optionsHtml = `<ul id="dropdown-list" tabindex="-1" role="listbox" aria-activedescendant="dropdown-opt-${selectedUserIdx}" style="position:absolute;top:110%;left:0;width:100%;background:#232323;border:2px solid #888;border-radius:7px;z-index:20;max-height:260px;overflow-y:auto;box-shadow:0 4px 16px #000a;list-style:none;padding:0;margin:0;">
-        ${ALL_USERS.map((u,i) => `
-          <li id="dropdown-opt-${i}" role="option" aria-selected="${i===selectedUserIdx}" data-idx="${i}" tabindex="-1" style="padding:0.7em 1em;display:flex;align-items:center;gap:0.7em;cursor:pointer;background:${i===selectedUserIdx?'#333':'none'};color:#fff;">
-            <span>${u.fullName}</span>
+        ${SORTED_USERS.map((u,i) => `
+          <li id="dropdown-opt-${i}" role="option" aria-selected="${i===selectedUserIdx}" data-idx="${i}" tabindex="-1" style="padding:0.7em 1em;display:flex;align-items:center;gap:0.7em;cursor:pointer;background:${i===selectedUserIdx?'#333':'none'};color:#fff;justify-content:flex-start;text-align:left;">
+            <span style='text-align:left;width:120px;display:inline-block;'>${u.fullName}</span>
             <span style='display:flex;align-items:center;gap:0.1em;'>${getHeartsHtml(u.hearts, 20)}</span>
             <span style='font-size:1em;color:#bbb;'>(${u.hearts})</span>
           </li>`).join('')}
@@ -284,20 +286,24 @@ document.addEventListener("DOMContentLoaded", () => {
   function getHeartsHtml(hearts, size=22) {
     let n = parseFloat(hearts || '0');
     let imgs = '';
-    while (n >= 1) {
+    // Only show full hearts if n >= 1
+    while (n >= 1 - 0.01) { // allow for float imprecision
       imgs += `<img src="/static/images/hearts/oneheart.png" alt="1 heart" style="width:${size}px;height:${size}px;vertical-align:middle;">`;
       n -= 1;
     }
-    if (Math.abs(n - 2/3) < 0.01) {
-      imgs += `<img src="/static/images/hearts/twothirdheart.png" alt="2/3 heart" style="width:${size}px;height:${size}px;vertical-align:middle;">`;
-    } else if (Math.abs(n - 1/3) < 0.01) {
+    // Show 2/3 or 1/3 heart if needed
+    if (n > 0.32 && n < 0.35) {
       imgs += `<img src="/static/images/hearts/thirdheart.png" alt="1/3 heart" style="width:${size}px;height:${size}px;vertical-align:middle;">`;
+    } else if (n > 0.65 && n < 0.7) {
+      imgs += `<img src="/static/images/hearts/twothirdheart.png" alt="2/3 heart" style="width:${size}px;height:${size}px;vertical-align:middle;">`;
+    } else if (n > 0.99 && n < 1.01) {
+      imgs += `<img src="/static/images/hearts/oneheart.png" alt="1 heart" style="width:${size}px;height:${size}px;vertical-align:middle;">`;
     }
     return imgs;
   }
 
   function handleDropdownKey(e) {
-    const max = ALL_USERS.length - 1;
+    const max = SORTED_USERS.length - 1;
     if (e.key === 'ArrowDown') {
       e.preventDefault();
       selectedUserIdx = Math.min(selectedUserIdx + 1, max);
@@ -322,7 +328,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function onDropdownSelect(idx) {
     selectedUserIdx = idx;
     // Update hearts display
-    const user = ALL_USERS[idx];
+    const user = SORTED_USERS[idx];
     renderHearts(document.getElementById('dropdown-hearts'), user.hearts);
     document.getElementById('dropdown-hearts-num').textContent = `(${user.hearts})`;
     // Set for evidence modal
@@ -334,7 +340,7 @@ document.addEventListener("DOMContentLoaded", () => {
   onDropdownSelect(0);
 
   document.getElementById('show-user-info').onclick = function() {
-    renderUserInfo(ALL_USERS[selectedUserIdx].email);
+    renderUserInfo(SORTED_USERS[selectedUserIdx].email);
   };
 
   showMyHearts();
