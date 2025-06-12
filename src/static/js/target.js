@@ -300,11 +300,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function onDropdownSelect(idx) {
     selectedUserIdx = idx;
-    // Update hearts display
-    const user = SORTED_USERS[idx];
-    renderHearts(document.getElementById('dropdown-hearts'), user.hearts);
+    // No longer update hearts display in a separate element
     // Set for evidence modal
-    if (targetEmailInput) targetEmailInput.value = user.email;
+    if (targetEmailInput) targetEmailInput.value = SORTED_USERS[idx].email;
   }
 
   // Initial render
