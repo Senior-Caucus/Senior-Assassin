@@ -221,10 +221,6 @@ document.addEventListener("DOMContentLoaded", () => {
     return already;
   }
 
-  showUserInfoBtn.addEventListener("click", function() {
-    renderUserInfo(userSelect.value);
-  });
-
   // --- Custom Dropdown Implementation ---
   const dropdownContainer = document.getElementById('custom-user-dropdown');
   // Sort users alphabetically by fullName (case-insensitive)
