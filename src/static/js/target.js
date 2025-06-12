@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function showMyHearts() {
     const me = ALL_USERS.find(u => u.email === CURRENT_USER_EMAIL);
     const myHearts = me ? me.hearts : '0';
-    //renderHearts(document.getElementById('my-hearts'), myHearts);
+    renderHearts(document.getElementById('my-hearts'), myHearts);
     document.getElementById('my-hearts-num').textContent = `(${myHearts})`;
   }
 
