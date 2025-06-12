@@ -313,6 +313,32 @@ document.addEventListener("DOMContentLoaded", () => {
     renderUserInfo(SORTED_USERS[selectedUserIdx].email);
   };
 
+  // --- Populate 'Users Who Share a Class With You' section ---
+  function populateSharedClassUsers() {
+    const sharedClassUsersDiv = document.getElementById("shared-class-users");
+    const currentUser = ALL_USERS.find(u => u.email === CURRENT_USER_EMAIL);
+    if (!currentUser || !currentUser.schedule) {
+      sharedClassUsersDiv.innerHTML = "<i>None</i>";
+      return;
+    }
+
+    const sharedUsers = ALL_USERS.filter(user => {
+      if (user.email === CURRENT_USER_EMAIL || !user.schedule) return false;
+      const userClasses = user.schedule.split(",").map(c => c.trim());
+      const currentUserClasses = currentUser.schedule.split(",").map(c => c.trim());
+      return userClasses.some(c => currentUserClasses.includes(c));
+    });
+
+    if (sharedUsers.length === 0) {
+      sharedClassUsersDiv.innerHTML = "<i>None</i>";
+    } else {
+      sharedClassUsersDiv.innerHTML = sharedUsers.map(user => `<div>${user.fullName}</div>`).join("");
+    }
+  }
+
+  // Populate shared class users on page load
+  populateSharedClassUsers();
+
   showMyHearts();
 
   // Loader CSS
