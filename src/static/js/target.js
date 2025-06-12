@@ -18,7 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // --- new game mode logic ---
-  const userSelect = document.getElementById("user-select");
   const userInfoDiv = document.getElementById("user-info");
   const submitBtn = document.getElementById("submit-evidence-btn");
   const targetEmailInput = document.getElementById("target_email");
@@ -48,18 +47,6 @@ document.addEventListener("DOMContentLoaded", () => {
     renderHearts(document.getElementById('my-hearts'), myHearts);
     document.getElementById('my-hearts-num').textContent = `(${myHearts})`;
   }
-
-  // Show dropdown user's hearts
-  function showDropdownHearts() {
-    const sel = userSelect.options[userSelect.selectedIndex];
-    const hearts = sel.getAttribute('data-hearts') || '0';
-    renderHearts(document.getElementById('dropdown-hearts'), hearts);
-    document.getElementById('dropdown-hearts-num').textContent = `(${hearts})`;
-  }
-
-  userSelect.addEventListener('change', showDropdownHearts);
-  showDropdownHearts();
-  showMyHearts();
 
   // Remove auto-render on select change
   // When opening modal, set target_email
@@ -350,7 +337,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderUserInfo(ALL_USERS[selectedUserIdx].email);
   };
 
-  if (userSelect) userSelect.style.display = 'none';
+  showMyHearts();
 
   // Loader CSS
   const style = document.createElement('style');
