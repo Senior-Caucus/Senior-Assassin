@@ -92,8 +92,8 @@ document.addEventListener("DOMContentLoaded", () => {
         <form id="evidence-form" method="post" enctype="multipart/form-data" style="margin-top:1.5em;display:flex;flex-direction:column;align-items:center;gap:0.5em;max-width:350px;">
           <label for="video" style="width:100%;text-align:left;">Video Evidence (max 25MB):</label>
           <input type="file" name="video" id="video" accept="video/*" required style="width:100%;">
-          <label for="comments" style="width:100%;text-align:left;">Comments:</label>
-          <textarea name="comments" id="comments" rows="3" placeholder="Optional..." style="width:100%;border-radius:6px;"></textarea>
+          <label for="comments" style="width:100%;text-align:left;">Comments (you MUST include the floor number; you may not tap someone on the same floor they tapped you on; see the rules for more info):</label>
+          <textarea name="comments" id="comments" rows="3" placeholder="Not Optional..." style="width:100%;border-radius:6px;"></textarea>
           <input type="hidden" name="target_email" id="target_email" value="${user.email}">
           <input type="hidden" name="user_email" value="${CURRENT_USER_EMAIL}">
           <div id="progress-container" class="hidden" style="width:100%;"><div id="upload-progress" style="height:8px;background:#fff;width:0%;border-radius:4px;"></div></div>
